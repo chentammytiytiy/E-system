@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退票收據</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            background-color: #e5e7eb; /* gray-200 */
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+            font-family: "MingLiU", "PMingLiU", "Apple LiGothic Medium", monospace;
+        }
+        .receipt-container {
+            display: flex;
+            gap: 20px;
+        }
+        .receipt-paper {
+            background-color: white;
+            width: 320px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            color: #000;
+            line-height: 1.5;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        .dashed-line {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+        .text-center { text-align: center; }
+        .text-lg { font-size: 18px; }
+        .text-xl { font-size: 24px; }
+        .font-bold { font-weight: bold; }
+        .qrcode {
+            width: 120px;
+            height: 120px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="receipt-container">
+        <!-- 門市留存 (Left) -->
+        <div class="receipt-paper">
+<div class="text-center font-bold tracking-widest">請顧客至櫃檯辦理退票作業</div>
+<div class="dashed-line"></div>
+<div class="text-center text-xl font-bold tracking-widest my-2">核對票號資料</div>
+<div class="text-center text-xl font-bold tracking-widest my-2">退票確實回收</div>
+<div class="text-center text-lg font-bold tracking-widest my-2">退票張數：2張</div>
+<div class="text-center text-lg font-bold tracking-widest my-1">票號後6碼：{{ ticket1 }}</div>
+<div class="text-center text-lg font-bold tracking-widest my-1">票號後6碼：{{ ticket2 }}</div>
+<div class="dashed-line"></div>
+<div class="text-center font-bold tracking-widest my-2">統一超商股份有限公司</div>
+<div class="qrcode">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=example" alt="QR Code" class="w-full h-full" style="object-fit: cover;">
+</div>
+<div>退票服務退費單(門市留存)</div>
+<div>{{ printTime }}</div>
+<div>店號：A00015     店名：安源5號店</div>
+<div>交易序號：{{ txnId }}</div>
+<div>訂單編號：{{ orderId }}</div>
+<div>類別：展覽活動</div>
+<div>名稱：【測試】史努比展</div>
+<div>退票張數：2張</div>
+<div>{{ isCash ? '總票價' : '總票價/刷退金額' }}：{{ paymentAmount }}元</div>
+<div>手續費：{{ fee }}元</div>
+<div>實際退款金額：{{ actualRefund }}元</div>
+<div>繳費期限：{{ deadlineTime }}</div>
+<div class="text-center font-bold my-4">=== 請持繳費單至櫃檯結帳 ===</div>
+<div>備註:
+1. 退費單限本店櫃檯辦理且10分鐘內有效；逾時未至櫃檯完成退票手續，須待30分鐘後再重新操作。
+2. 統一超商僅受委託代為列印票券與款項代收，非交易相對人，若有使用上的問題請洽詢主辦單位或廠商。</div>
+        </div>
+
+        <!-- 消費者留存 (Right) -->
+        <div class="receipt-paper">
+<div class="text-center font-bold tracking-widest">請顧客至櫃檯辦理退票作業</div>
+<div class="dashed-line"></div>
+<div class="text-center text-lg font-bold tracking-widest my-1">票號後6碼：{{ ticket1 }}</div>
+<div class="text-center text-lg font-bold tracking-widest my-1">票號後6碼：{{ ticket2 }}</div>
+<div class="dashed-line"></div>
+<div class="text-center font-bold tracking-widest my-2">統一超商股份有限公司</div>
+<div class="my-2">退票服務退費單(消費者留存)</div>
+<div>店號：A00015     店名：安源5號店</div>
+<div>交易序號：{{ txnId }}</div>
+<div>訂單編號：{{ orderId }}</div>
+<div>類別：展覽活動</div>
+<div>名稱：【測試】史努比展</div>
+<div>退票張數：2張</div>
+<div>列印時間：{{ printTime }}</div>
+
+<div class="mt-4">1. 活動現場不接受ibon售出票券退票。
+2. 本注意事項若有未盡事宜，主辦單位保留解釋取消注意事項之權利。
+3. ibon相關操作問題，請撥打ibon免付費客服專線：0800-016138</div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const ticket1 = ref('');
+                const ticket2 = ref('');
+                const paymentAmount = ref(0);
+                const fee = ref(0);
+                const actualRefund = ref(0);
+                const isCash = ref(true); // 預設為付現
+
+                const txnId = ref('');
+                const orderId = ref('');
+                const printTime = ref('');
+                const deadlineTime = ref('');
+
+                // Helper to format date YYYY-MM-DD HH:mm
+                const formatDate = (date) => {
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    const hh = String(date.getHours()).padStart(2, '0');
+                    const min = String(date.getMinutes()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+                };
+
+                // Helper for random string
+                const generateRandomStr = (length, type = 'alnum') => {
+                    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    if (type === 'num') chars = '0123456789';
+                    let result = '';
+                    for (let i = 0; i < length; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
+                };
+
+                onMounted(() => {
+                    // Check URL search params
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('isCash')) {
+                        isCash.value = urlParams.get('isCash') === 'true';
+                    }
+
+                    // Load data from localStorage
+                    const savedData = localStorage.getItem('refund_receipt_data');
+                    if (savedData) {
+                        try {
+                            const data = JSON.parse(savedData);
+                            ticket1.value = data.ticket1 || '91ZLZ0';
+                            ticket2.value = data.ticket2 || '928M04';
+                            paymentAmount.value = data.paymentAmount || 0;
+                            fee.value = data.fee || 0;
+                            actualRefund.value = data.actualRefund || 0;
+                            if (data.isCash !== undefined && !urlParams.has('isCash')) {
+                                isCash.value = data.isCash;
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    } else {
+                        // fallback
+                        ticket1.value = '91ZLZ0';
+                        ticket2.value = '928M04';
+                    }
+
+                    // Generate IDs and Times
+                    const now = new Date();
+                    const mm = String(now.getMonth() + 1).padStart(2, '0');
+                    const dd = String(now.getDate()).padStart(2, '0');
+                    const yy = String(now.getFullYear()).slice(-2);
+                    
+                    // 交易序號：16 + MMDD + 8 random
+                    txnId.value = `16${mm}${dd}${generateRandomStr(8, 'alnum')}`;
+                    
+                    // 訂單編號：E + YYMMDD + 7 random
+                    orderId.value = `E${yy}${mm}${dd}${generateRandomStr(7, 'num')}`;
+
+                    printTime.value = formatDate(now);
+                    
+                    const deadline = new Date(now.getTime() + 10 * 60000);
+                    deadlineTime.value = formatDate(deadline);
+                });
+
+                return {
+                    ticket1,
+                    ticket2,
+                    paymentAmount,
+                    fee,
+                    actualRefund,
+                    isCash,
+                    txnId,
+                    orderId,
+                    printTime,
+                    deadlineTime
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

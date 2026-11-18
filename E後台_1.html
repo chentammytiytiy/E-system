@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>票務設定</title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            color: #333;
+        }
+        .container-box {
+            background-color: #ffffff;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .info-box {
+            background-color: #f5f5f5;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: flex-start;
+            color: #666;
+            font-size: 14px;
+        }
+        .info-box svg {
+            fill: #999;
+            margin-right: 15px;
+            margin-top: 3px;
+            min-width: 20px;
+        }
+        .form-label-right {
+            text-align: right;
+            font-size: 14px;
+            color: #555;
+            padding-right: 30px;
+            font-weight: normal;
+        }
+        /* 客製化粉紅色主題 */
+        .text-pink {
+            color: #e83e8c !important;
+        }
+        .form-check-input:checked {
+            background-color: #e83e8c;
+            border-color: #e83e8c;
+        }
+        .form-switch .form-check-input {
+            width: 2.8em;
+            height: 1.4em;
+            cursor: pointer;
+        }
+        .form-switch .form-check-input:focus {
+            box-shadow: none;
+            border-color: #ccc;
+        }
+        .form-check-label {
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            margin-right: 15px; 
+        }
+        .help-text {
+            font-size: 13px;
+            color: #888;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        .form-row {
+            margin-bottom: 25px;
+        }
+        .form-control {
+            font-size: 14px;
+            color: #555;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .form-control:focus {
+            border-color: #e83e8c;
+            box-shadow: 0 0 0 0.2rem rgba(232, 62, 140, 0.25);
+        }
+
+        /* 動態佣金區塊的背景樣式 */
+        .dynamic-input-box {
+            background-color: #fcfcfc;
+            border: 1px solid #eaeaea;
+            border-radius: 4px;
+            padding: 12px 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-box">
+    <div class="page-title">票務設定</div>
+    
+    <div class="info-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <div>
+            <strong>票務設定</strong><br>
+            各項關於活動的銷售設定，請點選各區塊
+        </div>
+    </div>
+
+    <form>
+        <!-- 售票通路 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">售票通路</label>
+            <div class="col-sm-9 d-flex align-items-center">
+                <span class="text-pink me-4">網站</span>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="ibonStore">
+                    <label class="form-check-label" for="ibonStore">門市 ibon</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 網站允許的付款方式 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">網站允許的付款方式</label>
+            <div class="col-sm-9">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="pay1">
+                    <label class="form-check-label" for="pay1">門市 ibon 付款</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="pay2" checked>
+                    <label class="form-check-label text-pink" for="pay2">信用卡</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="pay3">
+                    <label class="form-check-label" for="pay3">Open 錢包 (管理員專屬)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="pay4">
+                    <label class="form-check-label" for="pay4">icash Pay (管理員專屬)</label>
+                </div>
+                <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="checkbox" id="pay5">
+                    <label class="form-check-label" for="pay5">街口支付 (管理員專屬)</label>
+                </div>
+                <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="checkbox" id="pay6">
+                    <label class="form-check-label" for="pay6">LINE Pay (管理員專屬)</label>
+                </div>
+                <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="checkbox" id="pay7">
+                    <label class="form-check-label" for="pay7">AFTEE 先享後付 (管理員專屬)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 網站取票類型 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">網站取票類型</label>
+            <div class="col-sm-9">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="ticketType1" checked>
+                    <label class="form-check-label text-pink" for="ticketType1">電子票</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="ticketType2" checked>
+                    <label class="form-check-label text-pink" for="ticketType2">紙本票</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 開啟快速購票 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">開啟快速購票</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="quickBuy">
+                </div>
+                <div class="help-text">允許使用者免登入購票：不得設定會員限購、免登入時，僅支援「電子票」，無「門市 ibon 付款」</div>
+            </div>
+        </div>
+
+        <!-- 允許主辦自購 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">允許主辦自購</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="selfBuy">
+                </div>
+                <div class="help-text">允許主辦或管理員後台自行購票。</div>
+            </div>
+        </div>
+
+        <!-- 代收代號輸入框 -->
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">ibon機台購票代收代號</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="N2J, 對內商品編號: EN2J1, 管理員註記: 佣金 10元, 安源6元, 超商4元">
+            </div>
+        </div>
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">付款取票代收代號</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="N2J, 對內商品編號: EN2J1, 管理員註記: 佣金 10元, 安源6元, 超商4元">
+            </div>
+        </div>
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">不付款僅取票代收代號</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="N3J, 對內商品編號: EN3J1, 管理員註記: 佣金 5元, 安源0元, 超商5元">
+            </div>
+        </div>
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">因雨退票代收代號</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="O12, 對內商品編號: EO121, 管理員註記: 佣金 10元, 安源6元, 超商 4元">
+            </div>
+        </div>
+
+        <div class="row form-row mt-5">
+            <label class="col-sm-3 col-form-label form-label-right">以列印條碼核銷</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="barcodeVerify">
+                </div>
+                <div class="help-text">本活動以列印條碼進行票券核銷，電子票會將原 QRCode 反灰避免消費者誤觸</div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">實名制</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="realName">
+                </div>
+                <div class="help-text">消費者於售票網或 ibon 機台購票時，需輸入真實姓名與身分證字號 (或護照號碼) 才可繼續購買</div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">訂單限購</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="orderLimit">
+                </div>
+                <div class="help-text">限制在一次購物流程中，本活動的票券最多總共可購買的張數</div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">會員限購</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="memberLimit">
+                </div>
+                <div class="help-text">
+                    限制每一位會員，在本活動的票券中，最多共可購買的張數<br>
+                    【提醒】流量較高的活動，不建議開啟會員限購
+                </div>
+            </div>
+        </div>
+
+        <!-- 合作模式 -->
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">合作模式</label>
+            <div class="col-sm-9">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input coop-radio" type="radio" name="coopMode" id="coopMode1">
+                    <label class="form-check-label" for="coopMode1">代收代付</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input coop-radio" type="radio" name="coopMode" id="coopMode2" checked>
+                    <label class="form-check-label text-pink" for="coopMode2">切票/Net價</label>
+                </div>
+                <div class="help-text mt-2">設定本活動與主辦的合作模式，影響發票呈現方式 (管理員專屬)。</div>
+            </div>
+        </div>
+
+        <!-- 主辦佣金方式 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">主辦佣金方式</label>
+            <div class="col-sm-9">
+                <div class="mb-2">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input comm-method-radio" type="radio" name="organizerCommMethod" id="orgComm1" value="percent" checked>
+                        <label class="form-check-label text-pink" for="orgComm1">百分比</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input comm-method-radio" type="radio" name="organizerCommMethod" id="orgComm2" value="fixed">
+                        <label class="form-check-label" for="orgComm2">固定金額/張</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input comm-method-radio" type="radio" name="organizerCommMethod" id="orgComm3" value="net">
+                        <label class="form-check-label" for="orgComm3">NET月結</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input comm-method-radio" type="radio" name="organizerCommMethod" id="orgComm4" value="other">
+                        <label class="form-check-label" for="orgComm4">其他</label>
+                    </div>
+                </div>
+                
+                <!-- 動態顯示 1：佣金比例文字框 (百分比、固定金額/張) -->
+                <div id="commRateContainer" class="dynamic-input-box d-flex align-items-center mt-2" style="max-width: 350px;">
+                    <label class="me-3 mb-0" style="font-size: 14px; color: #555; white-space: nowrap;">佣金比例</label>
+                    <input type="text" class="form-control" placeholder="請輸入比例或金額">
+                </div>
+
+                <!-- 動態顯示 2：其他說明文字框 (選其他時出現) -->
+                <div id="commOtherContainer" class="dynamic-input-box align-items-center mt-2 d-none" style="max-width: 500px;">
+                    <label class="me-3 mb-0" style="font-size: 14px; color: #555; white-space: nowrap;">其他說明</label>
+                    <input type="text" class="form-control" placeholder="請填計算規則及確認報表是否人工處理">
+                </div>
+            </div>
+        </div>
+
+        <!-- 結帳方式 -->
+        <div class="row form-row align-items-center">
+            <label class="col-sm-3 col-form-label form-label-right">結帳方式</label>
+            <div class="col-sm-9">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input checkout-radio" type="radio" name="checkoutType" id="checkout1">
+                    <label class="form-check-label" for="checkout1">核銷月結</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input checkout-radio" type="radio" name="checkoutType" id="checkout2">
+                    <label class="form-check-label" for="checkout2">月結</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input checkout-radio" type="radio" name="checkoutType" id="checkout3" checked>
+                    <label class="form-check-label text-pink" for="checkout3">活動結</label>
+                </div>
+
+                <div class="help-text mt-2">設定本活動與主辦的結帳方式 (管理員專屬)。</div>
+            </div>
+        </div>
+
+        <!-- OP點數折抵票款 -->
+        <div class="row form-row">
+            <label class="col-sm-3 col-form-label form-label-right">OP點數折抵票款</label>
+            <div class="col-sm-9">
+                <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" id="opPointToggle">
+                </div>
+
+                <!-- 展開設定區塊 -->
+                <div id="opConfigContainer" class="dynamic-input-box mt-3 d-none" style="max-width: 480px;">
+                    <div class="d-flex align-items-center" style="max-width: 300px;">
+                        <label class="me-3 mb-0" style="font-size: 14px; color: #555; white-space: nowrap;">折抵上限</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="opDiscountLimit" placeholder="請輸入比例" min="1" max="90">
+                            <span class="input-group-text bg-white text-muted">%</span>
+                        </div>
+                    </div>
+                    <div id="opLimitWarning" class="text-danger mt-1 d-none" style="font-size: 13px;">
+                        折抵比例不可高於 90%（折抵後應付金額不可低於退票手續費金額）。
+                    </div>
+                    <div class="help-text">折抵比例請輸入 1%～90%。折抵後應付金額不可低於退票手續費金額。</div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- 引入 JS 以處理動態顯示與樣式變換 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const commRadios = document.querySelectorAll('.comm-method-radio');
+        const commRateContainer = document.getElementById('commRateContainer');
+        const commOtherContainer = document.getElementById('commOtherContainer');
+        
+        commRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // 先將兩個動態輸入框隱藏
+                commRateContainer.classList.add('d-none');
+                commRateContainer.classList.remove('d-flex');
+                commOtherContainer.classList.add('d-none');
+                commOtherContainer.classList.remove('d-flex');
+
+                if (this.value === 'percent' || this.value === 'fixed') {
+                    // 若選擇「百分比」或「固定金額」，顯示佣金比例文字框
+                    commRateContainer.classList.remove('d-none');
+                    commRateContainer.classList.add('d-flex');
+                } else if (this.value === 'other') {
+                    // 若選擇「其他」，顯示較寬的說明文字框，並帶有指定提示訊息
+                    commOtherContainer.classList.remove('d-none');
+                    commOtherContainer.classList.add('d-flex');
+                }
+                // 若選擇「NET月結」(value === 'net')，則維持隱藏
+                
+                // 動態更新選中文字為粉紅色
+                commRadios.forEach(r => {
+                    const label = document.querySelector(`label[for="${r.id}"]`);
+                    if(label) {
+                        if (r.checked) label.classList.add('text-pink');
+                        else label.classList.remove('text-pink');
+                    }
+                });
+            });
+        });
+
+        // 處理結帳方式選中字體的粉紅色變換
+        const checkoutRadios = document.querySelectorAll('.checkout-radio');
+        checkoutRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                checkoutRadios.forEach(r => {
+                    const label = document.querySelector(`label[for="${r.id}"]`);
+                    if(label) {
+                        if (r.checked) label.classList.add('text-pink');
+                        else label.classList.remove('text-pink');
+                    }
+                });
+            });
+        });
+
+        // 處理合作模式選中字體的粉紅色變換
+        const coopRadios = document.querySelectorAll('.coop-radio');
+        coopRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                coopRadios.forEach(r => {
+                    const label = document.querySelector(`label[for="${r.id}"]`);
+                    if(label) {
+                        if (r.checked) label.classList.add('text-pink');
+                        else label.classList.remove('text-pink');
+                    }
+                });
+            });
+        });
+
+        // 處理 OP 點數折抵的開關與顯示
+        const opPointToggle = document.getElementById('opPointToggle');
+        const opConfigContainer = document.getElementById('opConfigContainer');
+        const opDiscountLimit = document.getElementById('opDiscountLimit');
+        const opLimitWarning = document.getElementById('opLimitWarning');
+
+        if (opPointToggle && opConfigContainer) {
+            opPointToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    opConfigContainer.classList.remove('d-none');
+                } else {
+                    opConfigContainer.classList.add('d-none');
+                }
+            });
+            // 預設狀態初始化
+            if (!opPointToggle.checked) {
+                opConfigContainer.classList.add('d-none');
+            }
+        }
+
+        // 處理 OP 點數折抵上限的即時檢核與提醒
+        if (opDiscountLimit) {
+            opDiscountLimit.addEventListener('input', function() {
+                const val = parseFloat(this.value);
+                if (val > 90) {
+                    this.classList.add('is-invalid');
+                    if (opLimitWarning) opLimitWarning.classList.remove('d-none');
+                } else {
+                    this.classList.remove('is-invalid');
+                    if (opLimitWarning) opLimitWarning.classList.add('d-none');
+                }
+            });
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

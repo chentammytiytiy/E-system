@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯票種 - 票券管理系統</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-main: #374151;
+            --text-muted: #9ca3af;
+            --primary-pink: #ed64a6;
+            --primary-pink-hover: #d53f8c;
+            --warning-yellow: #f6e05e;
+            --warning-yellow-hover: #ecc94b;
+            --input-border: #cbd5e0;
+            --input-focus: #63b3ed;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .alert-banner {
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary-pink);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            display: flex;
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            width: 120px;
+            flex-shrink: 0;
+            text-align: right;
+            padding-right: 20px;
+            padding-top: 8px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .form-label .required {
+            color: #e53e3e;
+            margin-right: 4px;
+        }
+
+        .form-content {
+            flex-grow: 1;
+            max-width: 900px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 1px var(--input-focus);
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .note-input-wrapper {
+            position: relative;
+        }
+
+        .note-input-wrapper .char-count {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .note-input-wrapper input {
+            padding-right: 45px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 24px;
+            border-radius: 9999px; /* Fully rounded */
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-pink);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-pink-hover);
+        }
+
+        .action-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Advanced Settings Section */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar select, .toolbar input {
+            padding: 8px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            border: 1px solid var(--input-border);
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .btn-yellow {
+            background-color: var(--warning-yellow);
+            border-color: var(--warning-yellow);
+            color: #744210;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        th {
+            padding: 12px 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .number-input {
+            width: 80px;
+            padding: 6px 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .number-input:disabled {
+            background-color: #f3f4f6;
+            color: var(--text-muted);
+        }
+
+        .unit-select {
+            padding: 6px 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            color: var(--text-main);
+            background-color: white;
+            font-size: 13px;
+        }
+
+        .date-input {
+            width: 140px;
+            padding: 6px 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #48bb78;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="alert-banner">
+            【提醒】流量較高的活動，票區*場次的資料需小於50筆
+        </div>
+
+        <a href="#" class="back-link">
+            <i class="fas fa-arrow-left"></i> 返回 | 學生票
+        </a>
+
+        <!-- Basic Info Card -->
+        <div class="card">
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="required">*</span>票種種類
+                </div>
+                <div class="form-content">
+                    <input type="text" class="form-control" value="學生票">
+                    <div class="form-help">票種名稱命名以中文字不可超過40個字元</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    場次
+                </div>
+                <div class="form-content">
+                    <input type="text" class="form-control" placeholder="按下 enter 可重複新增多筆資料">
+                    <div class="form-help">
+                        若有多個場次，可在此輸入，可替代此表單場次<br>
+                        單一場次名稱文字不可超過30個字元
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    票區
+                </div>
+                <div class="form-content">
+                    <input type="text" class="form-control" placeholder="按下 enter 可重複新增多筆資料" style="border-color: var(--input-focus); box-shadow: 0 0 0 1px var(--input-focus);">
+                    <div class="form-help">
+                        若有多個票區，可在此輸入，可替代此表單票區<br>
+                        單一票區名稱文字不可超過30個字元
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    票券類型：紙本、電子券
+                </div>
+                <div class="form-content" style="padding-top: 8px;">
+                    <span style="color: var(--text-main); font-weight: 500; margin-right: 15px;">成本價單位</span>
+                    <div class="radio-group" style="display: inline-flex; margin-top: 0;">
+                        <label class="radio-label"><input type="radio" name="cost_unit"> 元/張</label>
+                        <label class="radio-label"><input type="radio" name="cost_unit"> 元/單</label>
+                        <label class="radio-label"><input type="radio" name="cost_unit"> %/張</label>
+                        <label class="radio-label"><input type="radio" name="cost_unit"> %/單</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label">
+                    <span class="required">*</span>票種內容
+                </div>
+                <div class="form-content">
+                    <textarea class="form-control" placeholder="出現在購買流程時的說明文字，為消費者說明本票種的內容"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-label" style="display: flex; flex-direction: column; align-items: flex-end;">
+                    <div><span class="required">*</span>票種注意事項 <i class="fas fa-info-circle" style="color: #cbd5e0; margin-left: 5px;"></i></div>
+                </div>
+                <div class="form-content notes-container">
+                    <div class="note-input-wrapper">
+                        <input type="text" class="form-control" placeholder="列印在紙本票上的注意事項，第一列">
+                        <span class="char-count">0/42</span>
+                    </div>
+                    <div class="note-input-wrapper">
+                        <input type="text" class="form-control" placeholder="列印在紙本票上的注意事項，第二列">
+                        <span class="char-count">0/42</span>
+                    </div>
+                    <div class="note-input-wrapper">
+                        <input type="text" class="form-control" placeholder="列印在紙本票上的注意事項，第三列">
+                        <span class="char-count">0/42</span>
+                    </div>
+                    <div class="note-input-wrapper">
+                        <input type="text" class="form-control" placeholder="列印在紙本票上的注意事項，第四列">
+                        <span class="char-count">0/42</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-container">
+                <button class="btn btn-primary">更新票種資訊</button>
+            </div>
+        </div>
+
+        <!-- Advanced Settings Card -->
+        <div class="card">
+            <h2 class="section-title">票價庫存進階設定</h2>
+            
+            <div class="toolbar">
+                <select>
+                    <option>售價</option>
+                </select>
+                <button class="btn-sm">全部設為 <i class="fas fa-caret-down"></i></button>
+                <input type="text" placeholder="請輸入金額" style="width: 150px;">
+                <button class="btn-sm btn-yellow">批次修改</button>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">場次</th>
+                            <th style="width: 15%;">票區</th>
+                            <th>成本價</th>
+                            <th>售價</th>
+                            <th>庫存總量</th>
+                            <th>公開販售</th>
+                            <th>販售起始日</th>
+                            <th>退票/販售截止日</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" class="number-input" value="0">
+                                    <select class="unit-select">
+                                        <option>元/張</option>
+                                        <option>元/筆</option>
+                                        <option>%/張</option>
+                                        <option>%/筆</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <input type="number" class="number-input" value="50">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <input type="number" class="number-input" value="500" disabled>
+                                </div>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <div style="position: relative;">
+                                    <i class="far fa-clock" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                    <input type="text" class="date-input" value="2024-04-21 10:45" style="padding-left: 28px;">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="position: relative;">
+                                    <i class="far fa-clock" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                    <input type="text" class="date-input" value="2024-12-31 00:00" style="padding-left: 28px;">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-container">
+                <button class="btn btn-primary">儲存變更</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

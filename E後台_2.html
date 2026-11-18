@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知信廣告設定</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #fff;
+            color: #333;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .text-pink {
+            color: #e83e8c !important;
+        }
+        .btn-pink {
+            background-color: #e83e8c;
+            border-color: #e83e8c;
+        }
+        .btn-pink:hover {
+            background-color: #d82b7c;
+            border-color: #d82b7c;
+        }
+        
+        /* Card 樣式 */
+        .ad-card {
+            background-color: #f4f5f7;
+            border: 1px solid #dcdcdc;
+            border-radius: 2px;
+        }
+        .ad-card-header {
+            background-color: #eef0f3;
+            border-bottom: 1px solid #dcdcdc;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ad-card-body {
+            padding: 25px 30px;
+        }
+        .form-label-right {
+            text-align: right;
+            padding-right: 15px;
+            color: #444;
+            font-weight: normal;
+        }
+        .help-text {
+            font-size: 13px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        /* 綠色 Switch */
+        .switch-green:checked {
+            background-color: #8fccaa !important;
+            border-color: #8fccaa !important;
+        }
+        
+        /* 隱藏/展開的 icon 旋轉效果 */
+        .collapse-icon {
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* 讓輸入框的 placeholder 或內容稍微偏淡的灰色 */
+        .input-group-text {
+            color: #b0b0b0;
+        }
+        .form-control {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5 mb-5" style="max-width: 850px;">
+    
+    <!-- 廣告設定卡片 -->
+    <div class="ad-card mb-3 shadow-sm">
+        <div class="ad-card-header">
+            <span class="text-secondary" style="font-size: 15px;">通知信廣告 B #2</span>
+            <div class="d-flex align-items-center">
+                <a href="#" class="text-pink text-decoration-none me-3" style="font-size: 13px;" data-bs-toggle="collapse" data-bs-target="#adCardBody2" aria-expanded="true">
+                    點擊收合 <i class="bi bi-chevron-down collapse-icon ms-1"></i>
+                </a>
+                <button type="button" class="btn bg-transparent border-secondary text-secondary p-0 d-flex justify-content-center align-items-center" style="width: 26px; height: 26px; opacity: 0.6;">
+                    <i class="bi bi-x-lg" style="font-size: 13px;"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="adCardBody2" class="collapse show">
+            <div class="ad-card-body">
+                
+                <!-- 標題 -->
+                <div class="row align-items-start mb-3">
+                    <label class="col-sm-3 col-form-label form-label-right pt-2">標題</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="熱門活動2">
+                        <div class="help-text">圖片說明 alt text: 不顯示，輔助用</div>
+                    </div>
+                </div>
+
+                <!-- 主視覺 -->
+                <div class="row align-items-start mb-3">
+                    <label class="col-sm-3 col-form-label form-label-right pt-2">
+                        <span class="text-danger">*</span> 主視覺
+                    </label>
+                    <div class="col-sm-9">
+                        <button class="btn btn-light bg-white border text-secondary w-100 text-start" type="button" style="padding: 7px 12px; font-size: 14px;">
+                            <i class="bi bi-image text-success me-2" style="opacity: 0.8;"></i> 點此上傳圖片 700 x 123 jpeg, jpg, gif 格式
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 前往網址 -->
+                <div class="row align-items-start mb-3">
+                    <label class="col-sm-3 col-form-label form-label-right pt-2">
+                        <span class="text-danger">*</span> 前往網址
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="https://ticket.ibon.com.tw/NewsInfo/Details/305">
+                        <div class="help-text">點按鈕後前往的網址</div>
+                    </div>
+                </div>
+
+                <!-- 開始時間 -->
+                <div class="row align-items-start mb-3">
+                    <label class="col-sm-3 col-form-label form-label-right pt-2">開始時間</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" value="2022-05-18 00:00">
+                        </div>
+                        <div class="help-text">自此時間後可被看見</div>
+                    </div>
+                </div>
+
+                <!-- 結束時間 -->
+                <div class="row align-items-start mb-2">
+                    <label class="col-sm-3 col-form-label form-label-right pt-2">結束時間</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" value="2026-12-31 18:04">
+                        </div>
+                        <div class="help-text">自此時間之後會自動隱藏</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 中間按鈕區塊 -->
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+        <button class="btn btn-pink text-white px-3 py-1 pb-2 pt-2" style="font-size: 14px;">新增通知信廣告 B</button>
+        <span class="text-dark" style="font-size: 13px;">可用拖曳的方式調整順序</span>
+    </div>
+
+    <!-- 下方開關區塊 -->
+    <div class="row mb-3 align-items-start">
+        <div class="col-sm-4 text-end">
+            <label class="col-form-label pt-0 pe-3 text-dark">啟動流管</label>
+        </div>
+        <div class="col-sm-8 ps-0">
+            <div class="form-check form-switch mb-1 ms-1">
+                <input class="form-check-input" type="checkbox" id="flowControlToggle" style="cursor: pointer;">
+            </div>
+            <div class="text-muted ms-1 mt-1" style="font-size: 12px;">開啟或關閉流管功能</div>
+        </div>
+    </div>
+
+    <div class="row mb-2 align-items-start">
+        <div class="col-sm-4 text-end">
+            <label class="col-form-label pt-0 pe-3 text-dark">啟用排程隱藏文化幣折抵按鈕</label>
+        </div>
+        <div class="col-sm-8 ps-0">
+            <div class="form-check form-switch mb-1 ms-1">
+                <input class="form-check-input switch-green" type="checkbox" id="cultureCoinToggle" checked style="cursor: pointer;">
+            </div>
+            <div class="text-muted ms-1 mt-1 mb-2" style="font-size: 13px;">在設定的起迄時間內隱藏文化幣折抵按鈕，停止其折抵結帳方式</div>
+        </div>
+    </div>
+
+    <!-- 文化幣折抵 - 時間設定區塊 -->
+    <div id="cultureCoinTimeBlock">
+        <div class="row mb-2 align-items-center">
+            <div class="col-sm-4 text-end">
+                <label class="col-form-label pe-3 text-dark">文化幣折抵按鈕隱藏開始時間</label>
+            </div>
+            <div class="col-sm-8 ps-0">
+                <div class="input-group" style="max-width: 500px;">
+                    <span class="input-group-text bg-white text-muted border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" value="2026-05-05 15:45">
+                </div>
+                <div class="text-muted mt-1" style="font-size: 13px;">期間結束後，文化幣折抵按鈕將自動恢復顯示</div>
+            </div>
+        </div>
+        <div class="row mb-4 align-items-center">
+            <div class="col-sm-4 text-end">
+                <label class="col-form-label pe-3 text-dark">文化幣折抵按鈕隱藏結束時間</label>
+            </div>
+            <div class="col-sm-8 ps-0">
+                <div class="input-group" style="max-width: 500px;">
+                    <span class="input-group-text bg-white text-muted border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" value="2026-05-06 15:45">
+                </div>
+                <div class="text-muted mt-1" style="font-size: 13px;">期間結束後，文化幣折抵按鈕將自動恢復顯示</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OP點數折抵按鈕 - 開關 -->
+    <div class="row mb-2 align-items-start border-top pt-4">
+        <div class="col-sm-4 text-end">
+            <label class="col-form-label pt-0 pe-3 text-dark">啟用排程隱藏OP點數折抵按鈕</label>
+        </div>
+        <div class="col-sm-8 ps-0">
+            <div class="form-check form-switch mb-1 ms-1">
+                <input class="form-check-input switch-green" type="checkbox" id="opCoinToggle" style="cursor: pointer;">
+            </div>
+            <div class="text-muted ms-1 mt-1 mb-2" style="font-size: 13px;">在設定的起迄時間內隱藏OP點數折抵按鈕，停止其折抵結帳方式</div>
+        </div>
+    </div>
+
+    <!-- OP點數折抵按鈕 - 時間設定區塊 -->
+    <div id="opCoinTimeBlock" class="d-none">
+        <div class="row mb-2 align-items-center">
+            <div class="col-sm-4 text-end">
+                <label class="col-form-label pe-3 text-dark">OP點數折抵按鈕隱藏開始時間</label>
+            </div>
+            <div class="col-sm-8 ps-0">
+                <div class="input-group" style="max-width: 500px;">
+                    <span class="input-group-text bg-white text-muted border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="YYYY-MM-DD HH:mm">
+                </div>
+                <div class="text-muted mt-1" style="font-size: 13px;">期間結束後，OP點數折抵按鈕將自動恢復顯示</div>
+            </div>
+        </div>
+        <div class="row mb-4 align-items-center">
+            <div class="col-sm-4 text-end">
+                <label class="col-form-label pe-3 text-dark">OP點數折抵按鈕隱藏結束時間</label>
+            </div>
+            <div class="col-sm-8 ps-0">
+                <div class="input-group" style="max-width: 500px;">
+                    <span class="input-group-text bg-white text-muted border-end-0 pe-2"><i class="bi bi-clock"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="YYYY-MM-DD HH:mm">
+                </div>
+                <div class="text-muted mt-1" style="font-size: 13px;">期間結束後，OP點數折抵按鈕將自動恢復顯示</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 儲存設定按鈕 -->
+    <div class="text-center mt-5 mb-5">
+        <button class="btn btn-pink text-white px-4 py-2" style="font-size: 15px;">儲存設定</button>
+    </div>
+
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 點擊收合按鈕的圖示變換
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapsables = document.querySelectorAll('.collapse');
+        collapsables.forEach(function (collapseElem) {
+            collapseElem.addEventListener('show.bs.collapse', function () {
+                var trigger = document.querySelector(`[data-bs-target="#${this.id}"]`);
+                if (trigger) trigger.classList.remove('collapsed');
+            });
+            collapseElem.addEventListener('hide.bs.collapse', function () {
+                var trigger = document.querySelector(`[data-bs-target="#${this.id}"]`);
+                if (trigger) trigger.classList.add('collapsed');
+            });
+        });
+
+        // 處理文化幣隱藏排程開關
+        const cultureCoinToggle = document.getElementById('cultureCoinToggle');
+        const cultureCoinTimeBlock = document.getElementById('cultureCoinTimeBlock');
+        if (cultureCoinToggle && cultureCoinTimeBlock) {
+            cultureCoinToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    cultureCoinTimeBlock.classList.remove('d-none');
+                } else {
+                    cultureCoinTimeBlock.classList.add('d-none');
+                }
+            });
+            // 初始化狀態
+            if (!cultureCoinToggle.checked) {
+                cultureCoinTimeBlock.classList.add('d-none');
+            }
+        }
+
+        // 處理OP點數隱藏排程開關
+        const opCoinToggle = document.getElementById('opCoinToggle');
+        const opCoinTimeBlock = document.getElementById('opCoinTimeBlock');
+        if (opCoinToggle && opCoinTimeBlock) {
+            opCoinToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    opCoinTimeBlock.classList.remove('d-none');
+                } else {
+                    opCoinTimeBlock.classList.add('d-none');
+                }
+            });
+            // 初始化狀態
+            if (!opCoinToggle.checked) {
+                opCoinTimeBlock.classList.add('d-none');
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>門市退票確認明細</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+        /* Custom styles to match the image precisely */
+        .kiosk-container {
+            background-color: #D2DEC4;
+            width: 1024px;
+            height: 768px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .top-bar {
+            background-color: #D86F7C;
+        }
+        .home-btn {
+            background-color: #8C434F;
+        }
+        .text-brown-red {
+            color: #A53F4A;
+        }
+        .table-header {
+            background-color: #8A8A8A;
+        }
+        .confirm-btn {
+            background-color: #A05A65;
+            clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+        }
+        .confirm-btn:hover {
+            background-color: #8C434F;
+        }
+        .progress-bar-bg {
+            background-color: #A3B593;
+            border: 2px solid #5A6D4A;
+        }
+        .progress-bar-fill {
+            background-color: #6D8E42;
+        }
+    </style>
+</head>
+<body class="p-8 flex flex-col items-center font-sans text-gray-800">
+
+    <div id="app">
+        <!-- 付款方式模擬切換列 -->
+        <div class="mb-5 flex items-center justify-between w-full max-w-[1024px] mx-auto bg-white px-5 py-3 rounded-lg shadow-sm border border-gray-200">
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-gray-700">購票付款方式模擬：</span>
+                <button type="button" @click="setCash(true)" :class="isCash ? 'bg-emerald-600 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3 py-1.5 rounded text-xs font-bold transition-all">
+                    付現 (門市退現金)
+                </button>
+                <button type="button" @click="setCash(false)" :class="!isCash ? 'bg-indigo-600 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3 py-1.5 rounded text-xs font-bold transition-all">
+                    非付現 (刷退/退點數，門市退0元)
+                </button>
+            </div>
+            <div class="text-xs text-gray-500">
+                繳費單欄位狀態：<span class="font-bold text-gray-800">{{ isCash ? '「總票價」' : '「總票價/刷退金額」' }}</span>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-row items-start gap-8 mx-auto w-fit">
+            <!-- UI Kiosk Screen -->
+            <div class="kiosk-container relative flex flex-col overflow-hidden shrink-0">
+                <!-- Top Bar -->
+            <div class="top-bar h-[68px] flex items-center justify-between pl-6 pr-0">
+                <div class="text-white text-[26px] font-bold tracking-[0.2em]">退票</div>
+                <div class="flex items-center h-full">
+                    <!-- Call Center -->
+                    <div class="bg-[#F4E3E5] rounded-full px-3 py-1 flex items-center gap-2 mr-6 shadow-sm">
+                        <div class="bg-[#D86F7C] rounded-full p-1.5 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-[#D86F7C] text-[11px] font-bold leading-tight tracking-wider">
+                            客服專線<br>Call Center
+                        </div>
+                    </div>
+                    <!-- Home Button -->
+                    <div class="home-btn h-full w-[80px] flex items-center justify-center cursor-pointer">
+                        <svg class="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 px-[60px] py-[40px] flex flex-col">
+                <!-- Header -->
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h1 class="text-[34px] font-extrabold text-[#434F38] mb-3 tracking-widest">確認明細</h1>
+                        <div class="text-brown-red font-bold text-base space-y-1 tracking-wide">
+                            <p>退票資訊：個人因素(扣{{ feeRate }}%手續費)</p>
+                            <p>場次資訊：【測試】史努比展 。 10/04 。 華山文創園區</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-[200px] h-3.5 progress-bar-bg rounded-full relative overflow-hidden">
+                            <div class="absolute inset-y-0 left-0 w-[95%] progress-bar-fill rounded-full"></div>
+                        </div>
+                        <span class="text-sm font-bold text-[#434F38] tracking-widest ml-1">完成</span>
+                    </div>
+                </div>
+                
+                <hr class="border-[#8A967D] border-t-2 mb-6">
+
+                <!-- Ticket Table -->
+                <div class="w-full">
+                    <div class="table-header text-white flex px-6 py-3 font-bold text-lg tracking-widest">
+                        <div class="w-[45%]">票號</div>
+                        <div class="w-[20%] text-center">票種名稱</div>
+                        <div class="w-[20%] text-center">票區名稱</div>
+                        <div class="w-[15%] text-center">票價</div>
+                    </div>
+                    <div class="bg-white">
+                        <div v-for="(ticket, idx) in tickets" :key="idx" class="flex px-6 py-[18px] border-b border-gray-300 text-lg font-bold text-[#4A4A4A]">
+                            <div class="w-[45%] font-sans">{{ ticket.no }}</div>
+                            <div class="w-[20%] text-center">{{ ticket.type }}</div>
+                            <div class="w-[20%] text-center">{{ ticket.area }}</div>
+                            <div class="w-[15%] text-center">{{ singlePrice }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="flex justify-end mt-[30px] pr-4">
+                    <div class="w-[380px] text-[17px] font-bold text-[#4A4A4A]">
+                        <div class="flex justify-between mb-2">
+                            <span class="tracking-widest">退票張數：</span>
+                            <span class="text-xl">2<span class="text-base ml-1">張</span></span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="tracking-widest">OP點數折抵票款：</span>
+                            <span class="text-xl">{{ opTicketingAmount }}<span class="text-base ml-1">元</span></span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="tracking-widest">折扣：</span>
+                            <span class="text-xl">{{ discountAmount }}<span class="text-base ml-1">元</span></span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="tracking-widest">原付款金額(含點數)：</span>
+                            <span class="text-xl">{{ paymentAmount }}<span class="text-base ml-1">元</span></span>
+                        </div>
+                        <div class="flex justify-between mb-[14px]">
+                            <span class="tracking-widest">退票手續費：</span>
+                            <span class="text-xl">{{ fee }}<span class="text-base ml-1">元</span></span>
+                        </div>
+                        <hr class="border-[#8A967D] border-t-2 mb-[14px]">
+                        <div class="flex justify-between items-center">
+                            <span class="tracking-widest">實際退款金額：</span>
+                            <span class="text-[34px] font-extrabold text-[#D32F2F] leading-none">{{ actualRefund }}<span class="text-lg text-[#4A4A4A] ml-1">元</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-auto pb-4">
+                    <hr class="border-[#8A967D] border-t-2 mb-8">
+                    <div class="flex justify-end">
+                        <button @click="navigateToReceipt" class="confirm-btn text-white font-bold text-[22px] tracking-widest py-3 px-14 pl-12 focus:outline-none shadow-md">
+                            <span class="mr-4">確認</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+            <!-- Receipt iframe -->
+            <div v-if="showReceipt" class="shrink-0 bg-[#e5e7eb] p-4 rounded-lg shadow-lg border border-gray-300">
+                <h3 class="text-center font-bold text-gray-700 mb-2">產生的收據預覽</h3>
+                <iframe :src="receiptUrl" width="750" height="900" class="border-0 bg-transparent" scrolling="no"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                // Simulator Data
+                const urlParams = new URLSearchParams(window.location.search);
+                // 預設為付現 (true)，除非 URL 明確指定 isCash=false
+                const initialIsCash = urlParams.has('isCash') ? urlParams.get('isCash') === 'true' : true;
+                const isCash = ref(initialIsCash); 
+                const singlePrice = ref(5);
+                const totalDiscount = ref(6);
+                const opTicketingAmount = ref(0);
+                const discountAmount = ref(0);
+                const opWalletAmount = ref(0);
+                const feeRate = ref(10);
+                const tickets = ref([]);
+
+                // 票號產生邏輯
+                const generateTicketNo = () => {
+                    const now = new Date();
+                    const yy = now.getFullYear().toString().slice(-2);
+                    const mm = (now.getMonth() + 1).toString().padStart(2, '0');
+                    const dd = now.getDate().toString().padStart(2, '0');
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    let randomStr = '';
+                    for (let i = 0; i < 11; i++) {
+                        randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return `QXX${yy}${mm}${dd}${randomStr}`;
+                };
+
+                onMounted(() => {
+                    // 從 op_wallet_refund_calculator 讀取資料
+                    const savedData = localStorage.getItem('op_wallet_refund_data');
+                    if (savedData) {
+                        try {
+                            const data = JSON.parse(savedData);
+                            if (data.price !== undefined) singlePrice.value = data.price / 2;
+                            if (data.feeRate !== undefined) feeRate.value = data.feeRate;
+                            
+                            let totalDisc = 0;
+                            let opTicket = 0;
+                            if (data.opTicketing !== undefined) {
+                                totalDisc += data.opTicketing;
+                                opTicket += data.opTicketing;
+                            }
+                            if (data.opPoints !== undefined) {
+                                totalDisc += data.opPoints;
+                                opTicket += data.opPoints;
+                            }
+                            opTicketingAmount.value = opTicket;
+
+                            if (data.discount !== undefined) {
+                                totalDisc += data.discount;
+                                discountAmount.value = data.discount;
+                            }
+                            
+                            if (data.opWallet !== undefined) {
+                                totalDisc += data.opWallet;
+                                opWalletAmount.value = data.opWallet;
+                            }
+                            totalDiscount.value = totalDisc;
+                        } catch(e) {
+                            console.error('Failed to parse localStorage data', e);
+                        }
+                    }
+
+                    tickets.value = [
+                        { no: generateTicketNo(), type: '學生票', area: '' },
+                        { no: generateTicketNo(), type: '學生票', area: '' }
+                    ];
+                });
+
+                // 計算邏輯
+                const totalPrice = computed(() => singlePrice.value * 2);
+                
+                // 原付款金額(含點數) = 刷卡金額 + op錢包兌點(退點)
+                const paymentAmount = computed(() => {
+                    const cardPayment = Math.max(0, totalPrice.value - totalDiscount.value);
+                    return cardPayment + opWalletAmount.value;
+                });
+                
+                // 退票手續費 = 總票價 * 手續費率
+                const fee = computed(() => Math.round(totalPrice.value * (feeRate.value / 100)));
+                
+                // 實際退款金額
+                const actualRefund = computed(() => {
+                    if (!isCash.value) {
+                        // 1. 購票不是付現，因為不會在門市退現金給消費者所以都會=0
+                        return 0;
+                    } else {
+                        // 2. 購票是付現=付款金額/刷退金額-退票手續費
+                        return paymentAmount.value - fee.value;
+                    }
+                });
+
+                const showReceipt = ref(false);
+                const receiptUrl = ref('');
+
+                const navigateToReceipt = () => {
+                    const data = {
+                        ticket1: tickets.value[0]?.no.slice(-6) || '',
+                        ticket2: tickets.value[1]?.no.slice(-6) || '',
+                        paymentAmount: paymentAmount.value,
+                        fee: fee.value,
+                        actualRefund: actualRefund.value,
+                        isCash: isCash.value
+                    };
+                    localStorage.setItem('refund_receipt_data', JSON.stringify(data));
+                    
+                    // Force iframe to reload if already shown
+                    receiptUrl.value = 'receipt.html?t=' + new Date().getTime() + '&isCash=' + isCash.value;
+                    showReceipt.value = true;
+                };
+
+                const setCash = (val) => {
+                    isCash.value = val;
+                    if (showReceipt.value) {
+                        navigateToReceipt();
+                    }
+                };
+
+                return {
+                    isCash,
+                    setCash,
+                    singlePrice,
+                    totalDiscount,
+                    opTicketingAmount,
+                    discountAmount,
+                    feeRate,
+                    tickets,
+                    paymentAmount,
+                    fee,
+                    actualRefund,
+                    navigateToReceipt,
+                    showReceipt,
+                    receiptUrl
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

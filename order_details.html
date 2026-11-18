@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單詳情 - 後台管理系統</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar for sidebar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: #2a2a2a; 
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #4a4a4a; 
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-[240px] bg-[#2a2a2a] text-gray-300 flex flex-col transition-all duration-300 sidebar-scroll overflow-y-auto flex-shrink-0">
+            <div class="py-6">
+                <nav class="mt-2 text-[15px]">
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-tachometer-alt w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        首頁儀表板
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-cog w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        帳號管理
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-home w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        全站設定
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-th-large w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        前台分類設定
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-desktop w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        前台版型設定
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-file-alt w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        須知內容維護
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-coins w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        佣金設定
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-plus-circle w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        加值服務維護
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-money-bill-wave w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        金流管理
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-user-tie w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        簽約公司管理
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-building w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        外部公司管理
+                    </a>
+                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-700 hover:text-white transition-colors group">
+                        <i class="fas fa-calendar-alt w-6 text-center mr-3 text-gray-400 group-hover:text-white"></i>
+                        活動管理
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-white">
+            <div class="px-10 py-8 max-w-7xl">
+                
+                <!-- Page Header -->
+                <div class="flex justify-between items-end border-b border-gray-100 pb-5 mb-6 mt-2">
+                    <h1 class="text-[28px] font-bold text-gray-800 tracking-wide">訂單詳情</h1>
+                    <p class="text-sm text-gray-400 tracking-wide">檢視個別訂單的詳細資訊</p>
+                </div>
+
+                <!-- Order Info Card -->
+                <div class="bg-white border border-gray-200 rounded-sm">
+                    <div class="px-8 py-5">
+                        <h2 class="text-[17px] font-bold text-gray-800 tracking-wide">訂單資訊</h2>
+                    </div>
+                    
+                    <div class="px-8 pb-8 pt-2">
+                        <div class="space-y-[14px]">
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">訂單編號</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">E2609010181818</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">取票序號</div>
+                                <div class="flex-1 text-gray-800 text-[15px]"></div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">內容</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">【測試】史努比展</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">票價</div>
+                                <div class="flex-1 text-gray-800 text-[15px]" id="info-price">NT$ 480</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">OP點數折抵票款</div>
+                                <div class="flex-1 text-gray-800 text-[15px]" id="info-op-points">NT$ 247</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">折扣</div>
+                                <div class="flex-1 text-gray-800 text-[15px]" id="info-discount">NT$ 24</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">支付金額</div>
+                                <div class="flex-1 text-gray-800 text-[15px]" id="info-payment">NT$ 209</div>
+                            </div>
+                            <div class="flex hidden" id="row-op-wallet">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0"></div>
+                                <div class="flex-1 text-gray-500 text-[14px]" id="info-op-wallet"></div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">付款方式</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">LINE Pay</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">取票方式</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">電子票</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">訂單狀態</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">訂單完成</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">繳款完成時間</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">2026/09/01 02:08</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">社群ID (ibonUserId)</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">75555555553855715875</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">登入方式</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">會員主帳號</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">Email</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">mich40423@gmail.com</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">稅別</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">免稅</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">發票開立時間 (eDate)</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">2026-09-01</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">開立時間 (eDate)</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">2026/09/01</div>
+                            </div>
+                            <div class="flex">
+                                <div class="w-[200px] text-gray-600 text-[15px] flex-shrink-0">發票編號 (eNo)</div>
+                                <div class="flex-1 text-gray-800 text-[15px]">EP54554554</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 票券資訊 Card -->
+                <div class="bg-white border border-gray-200 rounded-sm mt-6">
+                    <div class="px-8 py-5 border-b border-gray-100">
+                        <h2 class="text-[17px] font-bold text-gray-800 tracking-wide">票券資訊</h2>
+                    </div>
+                    <div class="px-8 py-4 overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[900px]">
+                            <thead>
+                                <tr class="text-[14px] text-gray-600 border-b border-gray-100">
+                                    <th class="py-3 pr-4 font-medium whitespace-nowrap">票號</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">方案</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">票種</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">場次</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">座位</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">票價</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">狀態</th>
+                                    <th class="py-3 px-4 font-medium whitespace-nowrap">核銷時間</th>
+                                    <th class="py-3 pl-4 font-medium whitespace-nowrap">退票時間</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-[14px] text-gray-800">
+                                <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                                    <td class="py-4 pr-4 whitespace-nowrap">QXX2601020003079TREV</td>
+                                    <td class="py-4 px-4"></td>
+                                    <td class="py-4 px-4" id="ticket-type">全票</td>
+                                    <td class="py-4 px-4"></td>
+                                    <td class="py-4 px-4"></td>
+                                    <td class="py-4 px-4" id="ticket-price">NT$ 50</td>
+                                    <td class="py-4 px-4 text-[#d85c80]">已退票</td>
+                                    <td class="py-4 px-4"></td>
+                                    <td class="py-4 pl-4 whitespace-nowrap">2026/01/02 16:04</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 退款紀錄 Card -->
+                <div class="bg-white border border-gray-200 rounded-sm mt-6 mb-12">
+                    <div class="px-8 py-6">
+                        <h2 class="text-[17px] font-bold text-gray-800 tracking-wide">退款紀錄 ER2601070000012</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 mb-5">申請於 2026/01/07 11:14</p>
+                        
+                        <div>
+                            <button class="border border-[#d85c80] text-[#d85c80] hover:bg-pink-50 px-4 py-1.5 rounded-[3px] text-[14px] transition-colors">列印折讓單</button>
+                        </div>
+                    </div>
+                    
+                    <div class="px-8 pb-8">
+                        <!-- Table 1 -->
+                        <div class="w-full overflow-x-auto mb-6">
+                            <table class="w-full text-left border-collapse min-w-[900px]">
+                                <thead>
+                                    <tr class="bg-[#eef0f3] text-[14px] text-gray-700">
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-l-sm">退票序號</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">退票代收代付</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">退票點</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">退票客姓名</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">票號</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">票種</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap">票價</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-r-sm">手續費</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-[14px] text-gray-800">
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-4 whitespace-nowrap">ER2601070000012</td>
+                                        <td class="py-4 px-4">012</td>
+                                        <td class="py-4 px-4">網站</td>
+                                        <td class="py-4 px-4">tammy</td>
+                                        <td class="py-4 px-4">QXX26010200030804M4O</td>
+                                        <td class="py-4 px-4" id="refund-ticket-type">全票</td>
+                                        <td class="py-4 px-4" id="refund-ticket-price">NT$ 50</td>
+                                        <td class="py-4 px-4" id="refund-fee">NT$ 0</td>
+                                    </tr>
+                                    <!-- Summary Row -->
+                                    <tr class="border-b border-gray-100">
+                                        <td colspan="5"></td>
+                                        <td class="py-4 px-4 font-medium">加總</td>
+                                        <td class="py-4 px-4" id="refund-total">NT$ 25</td>
+                                        <td class="py-4 px-4" id="refund-fee-summary">NT$ 0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Table 2 -->
+                        <div class="w-full overflow-x-auto mb-6">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-[#eef0f3] text-[14px] text-gray-700">
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-l-sm w-1/4">刷退金額</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap w-1/4">狀態</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap w-1/4">預計執行時間</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-r-sm w-1/4">實際執行時間</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-[14px] text-gray-800">
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-4 whitespace-nowrap" id="refund-card-return">NT$ 25</td>
+                                        <td class="py-4 px-4">已完成</td>
+                                        <td class="py-4 px-4">2026/01/10 08:00</td>
+                                        <td class="py-4 px-4">2026/01/10 08:00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Table 3 -->
+                        <div class="w-full overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-[#eef0f3] text-[14px] text-gray-700">
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-l-sm w-[20%]">折讓金額</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap w-[20%]">狀態</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap w-[20%]">預計執行時間</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap w-[20%]">實際執行時間</th>
+                                        <th class="py-3 px-4 font-medium whitespace-nowrap rounded-r-sm w-[20%]">折讓單號</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-[14px] text-gray-800">
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-4 whitespace-nowrap" id="refund-allowance">NT$ 20</td>
+                                        <td class="py-4 px-4">已完成</td>
+                                        <td class="py-4 px-4">2026/01/10 08:00</td>
+                                        <td class="py-4 px-4">2026/01/10 09:00</td>
+                                        <td class="py-4 px-4">20260110E0003</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedDataStr = localStorage.getItem('op_wallet_refund_data');
+            if (savedDataStr) {
+                const data = JSON.parse(savedDataStr);
+                
+                // Get values
+                const price = data.price || 0;
+                const opPoints = data.opTicketing !== undefined ? data.opTicketing : (data.opPoints || 0);
+                const discount = data.discount || 0;
+                const opWallet = data.opWallet || 0;
+                const feeRate = data.feeRate || 0;
+                
+                // Calculate derived values
+                const paymentAmount = Math.max(0, price - opPoints - discount);
+                const fee = Math.round(price * (feeRate / 100));
+                
+                const refundTotal = price - opPoints - discount - opWallet;
+                const refundCardReturn = refundTotal - fee;
+                
+                // invoice Amount logic based on whether opWallet was used
+                const invoiceAmt = Math.max(0, paymentAmount - opWallet);
+
+                // Update Order Info Card
+                document.getElementById('info-price').innerText = `NT$ ${price}`;
+                document.getElementById('info-op-points').innerText = `NT$ ${opPoints}`;
+                document.getElementById('info-discount').innerText = `NT$ ${discount}`;
+                document.getElementById('info-payment').innerText = `NT$ ${paymentAmount}`;
+                
+                if (opWallet > 0) {
+                    const rowOpWallet = document.getElementById('row-op-wallet');
+                    rowOpWallet.classList.remove('hidden');
+                    document.getElementById('info-op-wallet').innerText = `(OP 點數 ${opWallet}點)`;
+                }
+                
+                // Update Ticket Info Card
+                document.getElementById('ticket-type').innerText = '全票';
+                document.getElementById('ticket-price').innerText = `NT$ ${price}`;
+                
+                // Update Refund Record Card
+                document.getElementById('refund-ticket-type').innerText = '全票';
+                document.getElementById('refund-ticket-price').innerText = `NT$ ${price}`;
+                document.getElementById('refund-fee').innerText = `NT$ ${fee}`;
+                document.getElementById('refund-total').innerText = `NT$ ${refundTotal}`;
+                document.getElementById('refund-fee-summary').innerText = `NT$ ${fee}`;
+                
+                document.getElementById('refund-card-return').innerText = `NT$ ${refundCardReturn}`;
+                document.getElementById('refund-allowance').innerText = `NT$ ${invoiceAmt}`;
+            }
+        });
+    </script>
+</body>
+</html>

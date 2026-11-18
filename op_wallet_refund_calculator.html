@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OP錢包退票金額與OP點數計算機</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-gray-100 p-4 md:p-8 text-gray-800 font-sans">
+    <div id="app" class="max-w-5xl mx-auto space-y-6">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-700">OP錢包退票金額與OP點數計算機</h1>
+        
+        <div class="text-center mb-6">
+            <button onclick="window.open('order_details.html', '_blank')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded shadow-md transition-colors text-lg">
+                查看訂單詳情 (連動資料)
+            </button>
+        </div>
+        
+        <!-- 輸入區塊 -->
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2">自訂購票與退票設定 (OP錢包)</h2>
+            <!-- 第一層：票價與折抵 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">票價</label>
+                    <input type="number" v-model.number="price" min="0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">OP點數折抵票款(整筆取消)</label>
+                    <input type="number" v-model.number="opTicketing" min="0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">折扣</label>
+                    <input type="number" v-model.number="discount" min="0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-2 border">
+                </div>
+            </div>
+
+            <!-- 付款金額顯示 -->
+            <div class="flex items-center bg-blue-50 p-3 rounded-lg mb-4 text-sm border border-blue-100">
+                <span class="text-blue-600 font-bold">⬇️ 系統計算 付款金額 =</span> 
+                <span class="font-bold text-xl ml-2 text-blue-800">{{ totalPayment }}</span>
+                <span class="text-xs text-blue-400 ml-2">(票價 - OP點數折抵票款 - 折扣)</span>
+            </div>
+
+            <!-- 第二層：OP錢包與手續費 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 mb-2 border-t">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">OP錢包兌點(退點)</label>
+                    <input type="number" v-model.number="opWallet" min="0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">退票手續費 (%)</label>
+                    <input type="number" v-model.number="feeRate" min="0" max="100" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-2 border">
+                </div>
+            </div>
+            
+            <!-- 其他計算結果 -->
+            <div class="mt-4 pt-4 border-t flex flex-wrap gap-6 text-sm bg-gray-50 p-4 rounded-lg">
+                <div class="flex items-center w-full md:w-auto">
+                    <span class="text-gray-500">系統計算 op刷卡金額 =</span> 
+                    <span class="font-bold text-xl ml-2 text-gray-800">{{ paymentAmount }}</span>
+                    <span class="text-xs text-gray-400 ml-2">(付款金額 - OP錢包兌點)</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500">系統計算 發票開立金額 =</span> 
+                    <span class="font-bold text-xl ml-2 text-gray-800">{{ invoiceAmount }}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500">系統計算 退票手續費 =</span> 
+                    <span class="font-bold text-xl ml-2 text-red-600">{{ fee }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 試算結果區塊 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- 情境一 -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="bg-yellow-300 p-3 text-center font-bold text-gray-800">1. 線上購票(OP錢包) + 線上退票</div>
+                <table class="w-full text-left text-sm flex-grow">
+                    <tbody class="divide-y">
+                        <tr><td class="p-4 bg-gray-50 w-1/2">op刷卡金額</td><td class="p-4 text-right font-medium">{{ paymentAmount }}</td></tr>
+                        <tr><td class="p-4 bg-gray-50">發票開立金額</td><td class="p-4 text-right font-medium">{{ invoiceAmount }}</td></tr>
+                        <tr>
+                            <td class="p-4 bg-gray-50 text-red-600">
+                                退票手續費<br><span class="text-xs text-gray-500">(依序從退刷金額/點數扣)</span>
+                            </td>
+                            <td class="p-4 text-right text-red-600 font-bold">{{ fee }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-blue-50 font-bold text-blue-700 border-t-2 border-blue-200">退款金額</td>
+                            <td class="p-4 text-right font-bold text-blue-700 text-xl bg-blue-50 border-t-2 border-blue-200">{{ scenario1.refund }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-green-50 font-bold text-green-700">OP點數(整筆取消)</td>
+                            <td class="p-4 text-right font-bold text-green-700 text-xl bg-green-50">{{ scenario1.refundOpTicketing }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-emerald-50 font-bold text-emerald-700">OP點數(退點)</td>
+                            <td class="p-4 text-right font-bold text-emerald-700 text-xl bg-emerald-50">{{ scenario1.refundOpWallet }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-4 bg-gray-100 text-xs text-gray-600 leading-relaxed border-t">
+                    <strong>規則：</strong>優先從 op刷卡金額 扣除手續費。若不足，再從 OP錢包兌點(退點) 扣除。不可從 OP點數折抵票款(整筆取消) 扣除，若還是不足扣退票手續費，退款金額顯示負數。
+                </div>
+                <div class="p-4 bg-gray-50 border-t flex justify-end">
+                    <button onclick="window.open('online_refund_ui.html', 'OnlineRefundUI', 'width=1200,height=800')" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded shadow-sm text-sm transition-colors">
+                        線上退票預覽圖 &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- 情境二 -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="bg-yellow-300 p-3 text-center font-bold text-gray-800">2. 線上購票(OP錢包) + 門市退票</div>
+                <table class="w-full text-left text-sm flex-grow">
+                    <tbody class="divide-y">
+                        <tr><td class="p-4 bg-gray-50 w-1/2">op刷卡金額</td><td class="p-4 text-right font-medium">{{ paymentAmount }}</td></tr>
+                        <tr><td class="p-4 bg-gray-50">發票開立金額</td><td class="p-4 text-right font-medium">{{ invoiceAmount }}</td></tr>
+                        <tr>
+                            <td class="p-4 bg-gray-50 text-red-600">
+                                退票手續費<br><span class="text-xs text-gray-500">(直接付現)</span>
+                            </td>
+                            <td class="p-4 text-right text-red-600 font-bold">{{ fee }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-blue-50 font-bold text-blue-700 border-t-2 border-blue-200">退款金額</td>
+                            <td class="p-4 text-right font-bold text-blue-700 text-xl bg-blue-50 border-t-2 border-blue-200">{{ scenario2.refund }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-green-50 font-bold text-green-700">OP點數(整筆取消)</td>
+                            <td class="p-4 text-right font-bold text-green-700 text-xl bg-green-50">{{ scenario2.refundOpTicketing }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 bg-emerald-50 font-bold text-emerald-700">OP點數(退點)</td>
+                            <td class="p-4 text-right font-bold text-emerald-700 text-xl bg-emerald-50">{{ scenario2.refundOpWallet }}</td>
+                        </tr>
+                        <!-- 當需要補收現金時才顯示 -->
+                        <tr v-if="scenario2.cashToPay > 0">
+                            <td class="p-4 bg-orange-50 font-bold text-orange-600 border-t border-orange-200">消費者需門市付現</td>
+                            <td class="p-4 text-right font-bold text-orange-600 text-xl bg-orange-50 border-t border-orange-200">{{ scenario2.cashToPay }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-4 bg-gray-100 text-xs text-gray-600 leading-relaxed border-t">
+                    <strong>規則：</strong>因手續費已由消費者於門市全額付現，故不另行扣款。op刷卡金額與各項 OP點數皆會各自「全額退還」。
+                </div>
+                <div class="p-4 bg-gray-50 border-t flex justify-end">
+                    <button onclick="window.open('store_refund_confirmation_ui.html?isCash=false', 'StoreRefundUI', 'width=1080,height=850')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow-sm text-sm transition-colors">
+                        前往門市退票確認明細 UI (預覽) &rarr;
+                    </button>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    price: 100,
+                    opTicketing: 20,
+                    discount: 30,
+                    opWallet: 10,
+                    feeRate: 10
+                }
+            },
+            computed: {
+                totalPayment() {
+                    return Math.max(0, this.price - this.opTicketing - this.discount);
+                },
+                paymentAmount() {
+                    return Math.max(0, this.totalPayment - this.opWallet);
+                },
+                invoiceAmount() {
+                    return this.paymentAmount;
+                },
+                fee() {
+                    return Math.round(this.price * (this.feeRate / 100));
+                },
+                scenario1() {
+                    let refundCash = this.paymentAmount;
+                    let refundOpTicketing = this.opTicketing;
+                    let refundOpWallet = this.opWallet;
+                    let feeRemaining = this.fee;
+
+                    refundCash -= feeRemaining;
+                    if (refundCash < 0) {
+                        let remainingFee = -refundCash;
+                        refundCash = 0;
+                        
+                        let deductWallet = Math.min(remainingFee, refundOpWallet);
+                        refundOpWallet -= deductWallet;
+                        remainingFee -= deductWallet;
+                        
+                        if (remainingFee > 0) {
+                            refundCash = -remainingFee;
+                        }
+                    }
+
+                    return { 
+                        refund: refundCash, 
+                        refundOpTicketing: refundOpTicketing,
+                        refundOpWallet: refundOpWallet 
+                    };
+                },
+                scenario2() {
+                    // 門市退票：手續費全額付現，刷卡金額與OP點數各自全額退還
+                    return { 
+                        refund: this.paymentAmount, 
+                        refundOpTicketing: this.opTicketing,
+                        refundOpWallet: this.opWallet,
+                        cashToPay: this.fee 
+                    };
+                }
+            },
+            watch: {
+                // Watch for any changes to input data and save to localStorage
+                price: 'saveToLocalStorage',
+                opTicketing: 'saveToLocalStorage',
+                discount: 'saveToLocalStorage',
+                opWallet: 'saveToLocalStorage',
+                feeRate: 'saveToLocalStorage'
+            },
+            methods: {
+                saveToLocalStorage() {
+                    const data = {
+                        price: this.price,
+                        opTicketing: this.opTicketing,
+                        discount: this.discount,
+                        opWallet: this.opWallet,
+                        feeRate: this.feeRate
+                    };
+                    localStorage.setItem('op_wallet_refund_data', JSON.stringify(data));
+                }
+            },
+            mounted() {
+                this.saveToLocalStorage();
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>

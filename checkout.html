@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>確認付款方式</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .breadcrumb span {
+            color: #ccc;
+            margin: 0 5px;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .text-pink {
+            color: #c95175;
+        }
+        /* Ticket block */
+        .ticket-details {
+            border: 1px solid #eaeaea;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #fcfcfc;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .flex-between:last-child {
+            margin-bottom: 0;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eaeaea;
+        }
+        .text-gray { color: #555; }
+        
+        /* Radios */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        label.radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        input[type="radio"] {
+            margin-right: 8px;
+            accent-color: #2b7a9f;
+            width: 16px;
+            height: 16px;
+        }
+        .btn {
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-apply {
+            background-color: #f1a7b9;
+            color: white;
+            float: right;
+            margin-top: 10px;
+            padding: 8px 16px;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* Total */
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .total-amount {
+            font-size: 22px;
+            font-weight: 500;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+        .req { color: #d15b80; margin-right: 4px;}
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #eef2f5;
+            color: #666;
+            border-color: #d1d5da;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #c95175;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        /* Payment */
+        .ticket-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            border: 1px solid #c95175;
+            background: white;
+            color: #c95175;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .tab-btn.active {
+            background: #d6648b;
+            border-color: #d6648b;
+            color: white;
+        }
+        .btn-full {
+            width: 100%;
+            background-color: #ed6c93;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            font-size: 13px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        .checkbox-label input {
+            margin-top: 2px;
+            margin-right: 8px;
+        }
+        .link-pink {
+            color: #e57d9b;
+            text-decoration: none;
+        }
+        .btn-next {
+            background-color: #f1a9bd;
+            color: white;
+            padding: 10px 40px;
+            font-size: 16px;
+            float: right;
+            border-radius: 4px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="breadcrumb">
+        展覽活動 <span>/</span> tammy測試活動 <span>/</span> 確認付款方式
+    </div>
+
+    <div class="card">
+        <div class="card-header">票種：全票</div>
+        <div class="ticket-details">
+            <div class="flex-between">
+                <span class="text-gray">單價</span>
+                <span class="text-gray">NT$ 100</span>
+            </div>
+            <div class="flex-between">
+                <span class="text-gray">數量</span>
+                <span class="text-gray">2</span>
+            </div>
+            <div class="flex-between">
+                <span class="text-gray">小計 NT$</span>
+                <span class="text-pink" style="font-weight: bold;">200</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card clearfix">
+        <div class="card-header text-pink" style="font-size: 15px; font-weight: normal; margin-bottom: 12px;">折扣方案(擇一)</div>
+        <div class="radio-group">
+            <label class="radio-label">
+                <input type="radio" name="discount" value="multi"> 多語系折扣碼
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="discount" value="test"> 測試折扣碼
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="discount" value="none" checked> 不折抵
+            </label>
+        </div>
+        <button class="btn btn-apply">套用</button>
+    </div>
+
+    <div class="card">
+        <div class="card-header text-pink" style="font-size: 15px; font-weight: normal; margin-bottom: 12px;">折抵票款方案(擇一)</div>
+        <div class="radio-group">
+            <label class="radio-label">
+                <input type="radio" name="voucher" value="culture"> 使用文化幣
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="voucher" value="op"> 使用OP點數折抵票款
+            </label>
+            <div id="op-point-section" style="display: none; padding-left: 28px; margin-top: -4px;">
+                <input type="number" id="op-points-input" class="form-control" style="width: 80px; display: inline-block; padding: 6px; text-align: center;" min="0" placeholder="點數">
+                <span id="op-point-info" style="font-size: 13px; color: #555; margin-left: 8px;"></span>
+            </div>
+            <label class="radio-label">
+                <input type="radio" name="voucher" value="none" checked> 不折抵
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="total-row" style="margin-bottom: 10px; font-size: 14px;">
+            <span>總額</span>
+            <span>200 元</span>
+        </div>
+        <div id="discount-row" class="total-row" style="margin-bottom: 10px; font-size: 14px; display: none;">
+            <span>折扣</span>
+            <span id="discount-amount">0 元</span>
+        </div>
+        <div id="deduction-row" class="total-row" style="margin-bottom: 15px; font-size: 14px; display: none;">
+            <span>折抵</span>
+            <span id="deduction-amount">0 元</span>
+        </div>
+        <div class="total-row text-pink" style="border-top: 1px solid #eaeaea; padding-top: 15px; margin-bottom: 0;">
+            <span style="font-size: 18px;">應付金額</span>
+            <span class="total-amount"><span id="final-amount">200</span> <span style="font-size: 16px; font-weight: normal;">元</span></span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="form-group">
+            <label class="form-label"><span class="req">*</span>訂票人 Email</label>
+            <input type="email" class="form-control" value="shitianchen740@gmail.com" readonly>
+        </div>
+        <div class="form-group">
+            <label class="form-label"><span class="req">*</span>訂票人 真實姓名</label>
+            <input type="text" class="form-control">
+            <div class="help-text">請留下您的真實姓名</div>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><span class="req">*</span>訂票人 手機號碼</label>
+            <input type="tel" class="form-control">
+            <div class="help-text">請輸入正確手機號碼（限輸入數字），供客服聯繫及退票手續費發票通知使用。</div>
+        </div>
+    </div>
+
+    <div class="card clearfix">
+        <div class="section-title">請選擇取票方式</div>
+        <div class="ticket-type-tabs">
+            <button class="btn tab-btn active">電子票</button>
+            <button class="btn tab-btn">紙本票</button>
+        </div>
+
+        <div class="section-title">請選擇付款方式</div>
+        <button class="btn btn-full">信用卡</button>
+
+        <label class="checkbox-label">
+            <input type="checkbox">
+            <span>我已詳閱活動資訊並同意ibon售票系統 <a href="#" class="link-pink">隱私權政策暨資料蒐集處理及利用</a></span>
+        </label>
+
+        <button class="btn btn-next">下一步</button>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ticketTotal = 200;
+        const currentOpPoints = 400;
+        
+        const opPointSection = document.getElementById('op-point-section');
+        const opPointInfo = document.getElementById('op-point-info');
+        const opPointsInput = document.getElementById('op-points-input');
+        
+        const discountRow = document.getElementById('discount-row');
+        const discountAmountSpan = document.getElementById('discount-amount');
+        const deductionRow = document.getElementById('deduction-row');
+        const deductionAmountSpan = document.getElementById('deduction-amount');
+        const finalAmountSpan = document.getElementById('final-amount');
+        
+        const discountRadios = document.querySelectorAll('input[name="discount"]');
+        const voucherRadios = document.querySelectorAll('input[name="voucher"]');
+
+        function updateOpInfo() {
+            let selectedDiscount = document.querySelector('input[name="discount"]:checked').value;
+            let discountRate = 1.0;
+            if (selectedDiscount === 'test') {
+                discountRate = 0.9;
+            } else if (selectedDiscount === 'multi') {
+                discountRate = 0.8;
+            }
+
+            // XX = 票價 * (折扣比例) * OP折抵上限90%
+            let maxOpDeduction = Math.floor(ticketTotal * discountRate * 0.9);
+            
+            // 可使用點數：不超過目前持有點數，也不超過折抵上限
+            let usablePoints = Math.min(currentOpPoints, maxOpDeduction);
+
+            opPointInfo.innerHTML = `您目前的OP點數為${currentOpPoints}點，可使用${usablePoints}點，折抵${usablePoints}元。`;
+            
+            // 更新輸入框上限
+            opPointsInput.max = usablePoints;
+        }
+
+        function updateTotals() {
+            let selectedDiscount = document.querySelector('input[name="discount"]:checked').value;
+            let discountAmount = 0;
+            if (selectedDiscount === 'multi') {
+                discountAmount = Math.round(ticketTotal * 0.2);
+            } else if (selectedDiscount === 'test') {
+                discountAmount = Math.round(ticketTotal * 0.1);
+            }
+
+            if (discountAmount > 0) {
+                discountRow.style.display = 'flex';
+                discountAmountSpan.innerText = discountAmount + ' 元';
+            } else {
+                discountRow.style.display = 'none';
+                discountAmountSpan.innerText = '0 元';
+            }
+
+            let deductionAmount = 0;
+            let selectedVoucher = document.querySelector('input[name="voucher"]:checked').value;
+            if (selectedVoucher === 'op' && opPointsInput.value) {
+                deductionAmount = parseInt(opPointsInput.value, 10);
+                if (isNaN(deductionAmount)) deductionAmount = 0;
+            }
+
+            if (deductionAmount > 0) {
+                deductionRow.style.display = 'flex';
+                deductionAmountSpan.innerText = deductionAmount + ' 元';
+            } else {
+                deductionRow.style.display = 'none';
+                deductionAmountSpan.innerText = '0 元';
+            }
+
+            let finalAmount = ticketTotal - discountAmount - deductionAmount;
+            if (finalAmount < 0) finalAmount = 0;
+            finalAmountSpan.innerText = finalAmount;
+        }
+
+        // 綁定折扣變更事件
+        discountRadios.forEach(radio => radio.addEventListener('change', () => {
+            updateOpInfo();
+            // 當折抵上限改變，檢查當前輸入的點數是否超過新的上限
+            let maxVal = parseInt(opPointsInput.max, 10);
+            let currentVal = parseInt(opPointsInput.value, 10);
+            if (currentVal > maxVal) {
+                opPointsInput.value = maxVal;
+            }
+            updateTotals();
+        }));
+        
+        // 綁定折抵方案變更事件 (顯示/隱藏 OP點數區塊)
+        voucherRadios.forEach(radio => radio.addEventListener('change', (e) => {
+            if (e.target.value === 'op') {
+                opPointSection.style.display = 'block';
+                // 清空或重置使用者輸入的數值 (可選)
+                opPointsInput.value = '';
+            } else {
+                opPointSection.style.display = 'none';
+                opPointsInput.value = ''; // 隱藏時清空以防計入
+            }
+            updateTotals();
+        }));
+
+        // 綁定使用者輸入事件 (限制不能超過可使用點數)
+        opPointsInput.addEventListener('input', (e) => {
+            let maxVal = parseInt(e.target.max, 10);
+            let currentVal = parseInt(e.target.value, 10);
+            if (currentVal > maxVal) {
+                e.target.value = maxVal;
+            } else if (currentVal < 0) {
+                e.target.value = 0;
+            }
+            updateTotals();
+        });
+
+        // 初始化
+        updateOpInfo();
+        updateTotals();
+    });
+</script>
+</body>
+</html>
