@@ -529,17 +529,62 @@
                 </div>
             </div>
 
-            <h2 class="section-title">活動成效總覽</h2>
-            <div class="grid-4" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h2 class="section-title" style="margin-bottom: 0;">即時數據</h2>
+                    <button class="btn btn-blue" id="btn-refresh-realtime" style="padding: 5px 12px;">更新資料</button>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted);">最後更新時間：<span id="realtime-updated-at">2026-11-19 16:23:10</span></div>
+            </div>
+            <div class="grid-4" style="margin-bottom: 30px;">
+                <div class="stat-card" style="border-left: 4px solid var(--teal);">
+                    <div class="value" id="rt-active-30">0</div>
+                    <div class="label">30分鐘內活躍使用者人數</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--teal);">
+                    <div class="value" id="rt-active-5">0</div>
+                    <div class="label">5分鐘內活躍使用者人數</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--teal);">
+                    <div class="value" id="rt-pageview-30">0</div>
+                    <div class="label">30分鐘內頁面瀏覽次數</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--purple);">
+                    <div class="value" id="rt-available">0/0</div>
+                    <div class="label">可售總張數 <i class="fas fa-info-circle" title="剩餘可售張數 / 總可售張數"></i></div>
+                </div>
+            </div>
+
+            <h2 class="section-title">銷售數據</h2>
+            <div class="grid-4" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 20px;">
                 <div class="stat-card" style="border-left: 4px solid var(--primary);">
                     <div class="value">5,000</div>
                     <div class="label">總售出張數</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--primary);">
+                    <div class="value" style="font-size: 30px;">NT$ 5,000,000</div>
+                    <div class="label">總銷售金額</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--warning);">
                     <div class="value">300</div>
                     <div class="label">已退票張數</div>
                 </div>
+                <div class="stat-card" style="border-left: 4px solid var(--warning);">
+                    <div class="value" style="font-size: 30px;">NT$ 300,000</div>
+                    <div class="label">退票總金額</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #38bdf8;">
+                    <div class="value">4,200</div>
+                    <div class="label">核銷總張數</div>
+                </div>
             </div>
+            <script>
+                document.getElementById('btn-refresh-realtime').addEventListener('click', () => {
+                    const d = new Date(), p = n => String(n).padStart(2, '0');
+                    document.getElementById('realtime-updated-at').textContent =
+                        `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+                });
+            </script>
 
             <div class="chart-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
