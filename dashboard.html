@@ -309,6 +309,11 @@
             color: var(--text-muted);
         }
 
+        /* 銷售數據卡片：統一字級與位置 */
+        .sales-stats .stat-card { padding: 18px 20px; min-height: 110px; justify-content: space-between; }
+        .sales-stats .stat-card .label { order: -1; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+        .sales-stats .stat-card .value { font-size: 26px; font-weight: 500; line-height: 1.2; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; text-align: right; }
+
         /* Chart Area */
         .chart-container {
             background-color: var(--card-bg);
@@ -586,13 +591,13 @@
             </div>
 
             <h2 class="section-title">銷售數據 <span id="filter-range-label" style="font-size: 12px; font-weight: normal; color: var(--text-muted); margin-left: 8px;"></span></h2>
-            <div class="grid-4" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 20px;">
+            <div class="grid-4 sales-stats" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 20px;">
                 <div class="stat-card" style="border-left: 4px solid var(--primary);">
                     <div class="value" id="stat-sold-qty">0</div>
                     <div class="label">總售出張數</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--primary);">
-                    <div class="value" id="stat-sold-amt" style="font-size: 30px;">NT$ 0</div>
+                    <div class="value" id="stat-sold-amt">NT$ 0</div>
                     <div class="label">總銷售金額</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--warning);">
@@ -600,7 +605,7 @@
                     <div class="label">已退票張數</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--warning);">
-                    <div class="value" id="stat-refund-amt" style="font-size: 30px;">NT$ 0</div>
+                    <div class="value" id="stat-refund-amt">NT$ 0</div>
                     <div class="label">退票總金額</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid #38bdf8;">
