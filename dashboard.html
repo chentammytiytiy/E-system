@@ -618,7 +618,7 @@
 
             <div class="chart-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <div style="font-weight: bold; color: var(--text-main);">營運動態趨勢</div>
+                    <div style="font-weight: bold; color: var(--text-main);">每日票券統計</div>
                     <div id="chart-time-toggles" style="display: flex; border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; font-size: 12px;">
                         <button data-view="day" style="padding: 4px 10px; border: none; background: var(--primary); color: white; cursor: pointer; outline: none;">日</button>
                         <button data-view="week" style="padding: 4px 10px; border: none; background: white; color: var(--text-muted); cursor: pointer; border-left: 1px solid var(--border-color); outline: none;">週</button>
@@ -786,26 +786,33 @@
             }
         });
 
-        const mockData = {
-            day: {
-                labels: ['09-01(開賣)', '10-01', '11-01', '12-25(開展)', '12-26', '12-31(跨年)'],
-                sold: [1500, 300, 200, 500, 100, 200],
-                checkin: [0, 0, 0, 1800, 1200, 1200],
-                refund: [50, 10, 20, 20, 10, 0]
-            },
-            week: {
-                labels: ['9月第1週', '10月第1週', '11月第1週', '12月第4週', '12月第5週'],
-                sold: [2000, 400, 300, 800, 400],
-                checkin: [0, 0, 0, 3000, 1200],
-                refund: [80, 20, 30, 40, 10]
-            },
-            month: {
-                labels: ['9月', '10月', '11月', '12月'],
-                sold: [2500, 600, 500, 1400],
-                checkin: [0, 0, 0, 4200],
-                refund: [100, 50, 50, 100]
+        // 每日票券統計：依篩選後的交易明細，按 日/週/月 彙總（於 renderAll() 中呼叫）
+        let chartView = 'day', lastChartArgs = null;
+        function renderChart(recs, start, end) {
+            lastChartArgs = [recs, start, end];
+            const keyOf = ds => {
+                if (chartView === 'day') return ds.slice(5);
+                if (chartView === 'month') return ds.slice(0, 7);
+                const d = new Date(ds + 'T00:00:00');
+                d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); // 該週週一
+                return ymd(d).slice(5) + ' 週';
+            };
+            const buckets = new Map();
+            for (let d = new Date(start + 'T00:00:00'), e = new Date(end + 'T00:00:00'); d <= e; d.setDate(d.getDate() + 1)) {
+                const k = keyOf(ymd(d));
+                if (!buckets.has(k)) buckets.set(k, { sold: 0, refund: 0 });
             }
-        };
+            recs.forEach(r => {
+                const b = buckets.get(keyOf(r.date));
+                if (b) b[r.status] += r.qty;
+            });
+            const vals = [...buckets.values()];
+            mainBarChart.data.labels = [...buckets.keys()];
+            mainBarChart.data.datasets[0].data = vals.map(v => v.sold);
+            mainBarChart.data.datasets[1].data = vals.map(v => Math.round(v.sold * CHECKIN_RATE));
+            mainBarChart.data.datasets[2].data = vals.map(v => v.refund);
+            mainBarChart.update();
+        }
 
         const timeToggles = document.getElementById('chart-time-toggles');
         if (timeToggles) {
@@ -818,13 +825,8 @@
                     });
                     this.style.background = 'var(--primary)';
                     this.style.color = 'white';
-                    
-                    const view = this.getAttribute('data-view');
-                    mainBarChart.data.labels = mockData[view].labels;
-                    mainBarChart.data.datasets[0].data = mockData[view].sold;
-                    mainBarChart.data.datasets[1].data = mockData[view].checkin;
-                    mainBarChart.data.datasets[2].data = mockData[view].refund;
-                    mainBarChart.update();
+                    chartView = this.getAttribute('data-view');
+                    if (lastChartArgs) renderChart(...lastChartArgs);
                 });
             });
         }
@@ -939,6 +941,9 @@
         // ===== 依篩選結果重新繪製銷售數據與各視角表格 =====
         function renderAll() {
             const recs = getFilteredRecords();
+            let cs = startInput.value || SALE_DATES[0], ce = endInput.value || SALE_DATES[SALE_DATES.length - 1];
+            if (cs > ce) [cs, ce] = [ce, cs];
+            renderChart(recs, cs, ce);
             const totalRow = 'style="background-color: #f8fafc; font-weight: bold;"';
             const agg = (pred, val = r => r.qty) => recs.reduce((a, r) => a + (pred(r) ? val(r) : 0), 0);
             const amt = r => r.qty * r.tt.price;
