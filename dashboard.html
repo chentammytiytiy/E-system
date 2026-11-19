@@ -852,8 +852,8 @@
         // ===== 統一資料來源：以「交易明細」為基礎，依篩選條件彙總，確保所有數字一致 =====
 // ==== Mock Data Generation ====
             const TICKET_TYPES = [
-                { name: '全票', price: 1200, sessionInventory: SESSION_CAPACITY },
-                { name: '優待票', price: 800, sessionInventory: SESSION_CAPACITY }
+                { name: '全票', price: 1200, sessionInventory: 50 },
+                { name: '優待票', price: 800, sessionInventory: 50 }
             ];
         const START_DATE = new Date('2026-10-19');
         const END_DATE = new Date('2026-11-19');
@@ -906,7 +906,7 @@
             SESSIONS.forEach((session, sIdx) => {
                 const soldTotal = Math.floor(Math.random() * SESSION_CAPACITY) + 1; // at least 1 ticket sold
                 const refundTotal = Math.floor(soldTotal * Math.random() * 0.2); // up to 20% refunds
-                const allocate = (total) => distribute(total, new Array(TICKET_TYPES.length).fill(1));
+                const allocate = (total) => distribute(total, TICKET_TYPES.map(tt => tt.sessionInventory));
                 const soldDist = allocate(soldTotal);
                 const refundDist = allocate(refundTotal);
                 TICKET_TYPES.forEach((tt, ttIdx) => {
