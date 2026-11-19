@@ -850,13 +850,15 @@
         });
 
         // ===== 統一資料來源：以「交易明細」為基礎，依篩選條件彙總，確保所有數字一致 =====
-        const TICKET_TYPES = [
-            { name: '全票',  price: 1200, sessionInventory: 350, web: 1890, store: 810, webRefund: 126, storeRefund: 54 },
-            { name: '優待票', price: 800,  sessionInventory: 200, web: 1610, store: 690, webRefund: 84,  storeRefund: 36 }
-        ];
-        const SESSION_DATES = ['2024-12-25', '2024-12-26', '2024-12-27', '2024-12-28', '2024-12-29', '2024-12-30'];
+// ==== Mock Data Generation ====
+            const TICKET_TYPES = [
+                { name: '全票', price: 1200, sessionInventory: SESSION_CAPACITY },
+                { name: '優待票', price: 800, sessionInventory: SESSION_CAPACITY }
+            ];
+        const START_DATE = new Date('2026-10-19');
+        const END_DATE = new Date('2026-11-19');
         const SESSION_TIMES = ['10:00', '14:00', '18:00'];
-        const SESSION_CAPACITY = 500; // 每場次總容量（預設 500 張）
+        const SESSION_CAPACITY = 100; // per session capacity
         const CHECKIN_RATE = 0.84;
         const SESSION_WEIGHTS = [5, 6, 8, 5, 6, 9, 5, 7, 8, 6, 6, 9, 4, 5, 7, 3, 4, 5];
         const SALE_DAYS = 90;                 // 交易資料涵蓋：今天往前 90 天
@@ -881,8 +883,12 @@
         const pad = n => String(n).padStart(2, '0');
         const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
+// Generate session list from dynamic date range
         const SESSIONS = [];
-        SESSION_DATES.forEach(d => SESSION_TIMES.forEach(t => SESSIONS.push({ date: d, time: t })));
+        for (let d = new Date(START_DATE); d <= END_DATE; d.setDate(d.getDate() + 1)) {
+            const dateStr = ymd(d);
+            SESSION_TIMES.forEach(t => SESSIONS.push({ date: dateStr, time: t }));
+        }
 
         // 交易日期與每日權重 (開賣初期高峰、固定值避免每次重新整理數字不同)
         const TODAY = new Date();
@@ -895,25 +901,21 @@
         // 建立交易明細：{ date, s(場次索引), tt(票種), channel, pay, status, qty }
         function buildRecords() {
             const recs = [];
-            const push = (total, s, tt, channel, pay, status) => {
-                distribute(total, DAY_WEIGHTS).forEach((qty, di) => {
-                    if (qty) recs.push({ date: SALE_DATES[di], s, tt, channel, pay, status, qty });
-                });
-            };
-            TICKET_TYPES.forEach(tt => {
-                const web = distribute(tt.web, SESSION_WEIGHTS);
-                const store = distribute(tt.store, SESSION_WEIGHTS);
-                const webR = distribute(tt.webRefund, SESSION_WEIGHTS);
-                const storeR = distribute(tt.storeRefund, SESSION_WEIGHTS);
-                SESSIONS.forEach((_, s) => {
-                    push(web[s], s, tt, 'web', 'credit', 'sold');
-                    push(webR[s], s, tt, 'web', 'credit', 'refund');
-                    const [sc, sk] = distribute(store[s], STORE_PAY_WEIGHTS);
-                    const [rc, rk] = distribute(storeR[s], STORE_PAY_WEIGHTS);
-                    push(sc, s, tt, 'store', 'cash', 'sold');
-                    push(sk, s, tt, 'store', 'credit', 'sold');
-                    push(rc, s, tt, 'store', 'cash', 'refund');
-                    push(rk, s, tt, 'store', 'credit', 'refund');
+            // data generation logic follows
+            // Generate consistent mock transaction records per session
+            SESSIONS.forEach((session, sIdx) => {
+                const soldTotal = Math.floor(Math.random() * SESSION_CAPACITY) + 1; // at least 1 ticket sold
+                const refundTotal = Math.floor(soldTotal * Math.random() * 0.2); // up to 20% refunds
+                const allocate = (total) => distribute(total, new Array(TICKET_TYPES.length).fill(1));
+                const soldDist = allocate(soldTotal);
+                const refundDist = allocate(refundTotal);
+                TICKET_TYPES.forEach((tt, ttIdx) => {
+                    if (soldDist[ttIdx] > 0) {
+                        recs.push({ date: session.date, s: sIdx, tt, channel: 'web', pay: 'credit', status: 'sold', qty: soldDist[ttIdx] });
+                    }
+                    if (refundDist[ttIdx] > 0) {
+                        recs.push({ date: session.date, s: sIdx, tt, channel: 'web', pay: 'credit', status: 'refund', qty: refundDist[ttIdx] });
+                    }
                 });
             });
             return recs;
