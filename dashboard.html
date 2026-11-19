@@ -492,7 +492,7 @@
                 </div>
             </div>
 
-            <h2 class="section-title">基本功能</h2>
+            <h2 class="section-title">管理功能</h2>
             <div class="grid-4">
                 <div class="func-card">
                     <h3>訂單票券</h3>
@@ -555,26 +555,56 @@
                 </div>
             </div>
 
-            <h2 class="section-title">銷售數據</h2>
+            <!-- 篩選列 -->
+            <div class="filter-bar" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; padding: 15px 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 30px;">
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">選擇時間區間 <i class="fas fa-info-circle" style="color: var(--text-muted);" title="依訂單交易日期篩選"></i></div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="date" id="filter-start" style="padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit;">
+                        <span style="color: var(--text-muted);">~</span>
+                        <input type="date" id="filter-end" style="padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit;">
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">付款方式</div>
+                    <div style="display: flex; gap: 12px; font-size: 13px; padding: 6px 0;">
+                        <label><input type="checkbox" class="filter-pay" id="filter-pay-credit" value="credit" checked> 信用卡</label>
+                        <label><input type="checkbox" class="filter-pay" id="filter-pay-cash" value="cash" checked> 現金</label>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">票券狀態</div>
+                    <div style="display: flex; gap: 12px; font-size: 13px; padding: 6px 0;">
+                        <label><input type="checkbox" class="filter-status" id="filter-status-sold" value="sold" checked> 已銷售</label>
+                        <label><input type="checkbox" class="filter-status" id="filter-status-refund" value="refund" checked> 已退票</label>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-left: auto;">
+                    <button class="btn" id="btn-filter-search" style="background-color: var(--success, #16a34a);">搜尋</button>
+                    <button class="btn btn-red" id="btn-filter-clear">清除</button>
+                </div>
+            </div>
+
+            <h2 class="section-title">銷售數據 <span id="filter-range-label" style="font-size: 12px; font-weight: normal; color: var(--text-muted); margin-left: 8px;"></span></h2>
             <div class="grid-4" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 20px;">
                 <div class="stat-card" style="border-left: 4px solid var(--primary);">
-                    <div class="value">5,000</div>
+                    <div class="value" id="stat-sold-qty">0</div>
                     <div class="label">總售出張數</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--primary);">
-                    <div class="value" style="font-size: 30px;">NT$ 5,000,000</div>
+                    <div class="value" id="stat-sold-amt" style="font-size: 30px;">NT$ 0</div>
                     <div class="label">總銷售金額</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--warning);">
-                    <div class="value">300</div>
+                    <div class="value" id="stat-refund-qty">0</div>
                     <div class="label">已退票張數</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid var(--warning);">
-                    <div class="value" style="font-size: 30px;">NT$ 300,000</div>
+                    <div class="value" id="stat-refund-amt" style="font-size: 30px;">NT$ 0</div>
                     <div class="label">退票總金額</div>
                 </div>
                 <div class="stat-card" style="border-left: 4px solid #38bdf8;">
-                    <div class="value">4,200</div>
+                    <div class="value" id="stat-checkin-qty">0</div>
                     <div class="label">核銷總張數</div>
                 </div>
             </div>
@@ -605,45 +635,34 @@
                 </div>
             </div>
 
-            <div class="chart-row-4">
-                <div class="donut-chart-box">
-                    <h4>各票種銷售張(套)數</h4>
-                    <div class="chart-wrapper">
-                        <canvas id="donut1"></canvas>
-                    </div>
-                </div>
-                <div class="donut-chart-box">
-                    <h4>各場次銷售張(套)數</h4>
-                    <div class="chart-wrapper">
-                        <canvas id="donut2"></canvas>
-                    </div>
-                </div>
-                <div class="donut-chart-box">
-                    <h4>各票區銷售張(套)數</h4>
-                    <div class="chart-wrapper">
-                        <canvas id="donut3"></canvas>
-                    </div>
-                </div>
-                <div class="donut-chart-box">
-                    <h4>各通路銷售張(套)數</h4>
-                    <div class="chart-wrapper">
-                        <canvas id="donut4"></canvas>
-                    </div>
-                </div>
-            </div>
-
             <!-- Dynamic View Builder UI -->
             <div class="dynamic-view-builder">
                 <div class="tabs">
-                    <button class="tab-btn active" data-target="table-full-detail">📌 完整明細表</button>
+                    <button class="tab-btn active" data-target="table-scenario-b">📌 票種交叉表</button>
                     <button class="tab-btn" data-target="table-overview">📌 場次總覽</button>
-                    <button class="tab-btn" data-target="table-scenario-b">📌 票種交叉表</button>
                     <button class="tab-btn" data-target="table-scenario-a">📌 銷售通路分析</button>
                     <button class="tab-btn" data-target="table-format">📌 票券型態分析</button>
                 </div>
             </div>
 
             <!-- Table Containers -->
+            <div class="table-container" id="table-scenario-b">
+                <div class="table-title">票種庫存與銷售 (跨場次彙總)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>票種名稱</th>
+                            <th>總分配庫存</th>
+                            <th>已售出</th>
+                            <th>可售庫存 (剩餘)</th>
+                            <th>銷售率</th>
+                            <th>退票數</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticket-type-tbody"></tbody>
+                </table>
+            </div>
+
             <div class="table-container" id="table-overview" style="display: none;">
                 <div class="table-title">
                     場次總覽（場次 × 票種）
@@ -664,51 +683,7 @@
                             <th style="background-color:#eff6ff; text-align:center;">票種剩餘可售</th>
                         </tr>
                     </thead>
-                    <tbody id="overview-tbody">
-                        <!-- Filled by JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-container" id="table-scenario-b" style="display: none;">
-                <div class="table-title">票種庫存與銷售 (跨場次彙總)</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>票種名稱</th>
-                            <th>總分配庫存</th>
-                            <th>已售出</th>
-                            <th>可售庫存 (剩餘)</th>
-                            <th>銷售率</th>
-                            <th>退票數</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ticket-type-tbody">
-                        <tr>
-                            <td>全票</td>
-                            <td>3,000</td>
-                            <td>2,700</td>
-                            <td>300</td>
-                            <td>90.0%</td>
-                            <td>180</td>
-                        </tr>
-                        <tr>
-                            <td>優待票</td>
-                            <td>2,500</td>
-                            <td>2,300</td>
-                            <td>200</td>
-                            <td>92.0%</td>
-                            <td>120</td>
-                        </tr>
-                        <tr style="background-color: #f8fafc; font-weight: bold;">
-                            <td>總計</td>
-                            <td>5,500</td>
-                            <td>5,000</td>
-                            <td>500</td>
-                            <td>90.9%</td>
-                            <td>300</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="overview-tbody"></tbody>
                 </table>
             </div>
 
@@ -724,39 +699,10 @@
                             <th>退票總金額</th>
                         </tr>
                     </thead>
-                    <tbody id="channel-tbody">
-                        <tr>
-                            <td>網站購票 (Online)</td>
-                            <td>3,500</td>
-                            <td>NT$ 3,500,000</td>
-                            <td>210</td>
-                            <td>NT$ 210,000</td>
-                        </tr>
-                        <tr>
-                            <td>門市購票 (Retail)</td>
-                            <td>1,500</td>
-                            <td>NT$ 1,500,000</td>
-                            <td>90</td>
-                            <td>NT$ 90,000</td>
-                        </tr>
-                        <tr>
-                            <td>主辦自購 (Direct)</td>
-                            <td>0</td>
-                            <td>NT$ 0</td>
-                            <td>0</td>
-                            <td>NT$ 0</td>
-                        </tr>
-                        <tr style="background-color: #f8fafc; font-weight: bold;">
-                            <td>總計</td>
-                            <td>5,000</td>
-                            <td>NT$ 5,000,000</td>
-                            <td>300</td>
-                            <td>NT$ 300,000</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="channel-tbody"></tbody>
                 </table>
             </div>
-            
+
             <div class="table-container" id="table-format" style="display: none;">
                 <div class="table-title">票券型態分析</div>
                 <table>
@@ -770,82 +716,7 @@
                             <th>型態佔比</th>
                         </tr>
                     </thead>
-                    <tbody id="format-tbody">
-                        <tr>
-                            <td>電子票 (QR Code)</td>
-                            <td>4,000</td>
-                            <td>3,360</td>
-                            <td>84.0%</td>
-                            <td>240</td>
-                            <td>80.0%</td>
-                        </tr>
-                        <tr>
-                            <td>紙本票 (實體票券)</td>
-                            <td>1,000</td>
-                            <td>840</td>
-                            <td>84.0%</td>
-                            <td>60</td>
-                            <td>20.0%</td>
-                        </tr>
-                        <tr style="background-color: #f8fafc; font-weight: bold;">
-                            <td>總計</td>
-                            <td>5,000</td>
-                            <td>4,200</td>
-                            <td>84.0%</td>
-                            <td>300</td>
-                            <td>100%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-container" id="table-full-detail">
-                <div class="table-title">完整明細表</div>
-                <table id="full-detail-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 15%;">銷售通路</th>
-                            <th colspan="2">網路電子票</th>
-                            <th colspan="2">網路訂票 - 門市取票</th>
-                            <th colspan="2">網路訂票 - 門市取票付款</th>
-                            <th colspan="2">門市購票</th>
-                            <th colspan="2">主辦自辦電子票</th>
-                            <th colspan="2">主辦自辦紙本票</th>
-                        </tr>
-                        <tr>
-                            <th>刷卡 (信用卡/Open 錢包/icash Pay/街口支付/LINE Pay/AFTEE)</th>
-                            <th>現金</th>
-                            <th>刷卡 (信用卡/Open 錢包/icash Pay/街口支付/LINE Pay/AFTEE)</th>
-                            <th>現金</th>
-                            <th>現金</th>
-                            <th>刷卡</th>
-                            <th>現金</th>
-                            <th>刷卡</th>
-                            <th>主辦自購</th>
-                            <th>主辦自購</th>
-                            <th>主辦自購</th>
-                            <th>主辦自購</th>
-                        </tr>
-                        <tr>
-                            <th>狀態</th>
-                            <th>已售出</th>
-                            <th>已退票</th>
-                            <th>已售出未取票</th>
-                            <th>已取票</th>
-                            <th>已退票</th>
-                            <th>已售出</th>
-                            <th>已退票</th>
-                            <th>已售出</th>
-                            <th>已退票</th>
-                            <th>已售出</th>
-                            <th>已退票</th>
-                            <th>已售出</th>
-                            <th>已退票</th>
-                        </tr>
-                    </thead>
-                    <tbody id="full-detail-tbody">
-                        <!-- Filled by JS -->
-                    </tbody>
+                    <tbody id="format-tbody"></tbody>
                 </table>
             </div>
 
@@ -958,41 +829,20 @@
             });
         }
 
-        // Donut Charts Data setup
-        const donutOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '65%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { boxWidth: 12, font: { size: 10 } }
-                }
-            }
-        };
-
-        // 圓餅圖於下方 renderDonutCharts() 依明細表資料換算後繪製
-
         // Dynamic View Builder UI Logic
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tableContainers = document.querySelectorAll('.table-container');
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Handle active state
                 tabBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                // Hide all tables
                 tableContainers.forEach(container => container.style.display = 'none');
-                
-                // Show selected table
-                const targetId = btn.getAttribute('data-target');
-                document.getElementById(targetId).style.display = 'block';
+                document.getElementById(btn.getAttribute('data-target')).style.display = 'block';
             });
         });
 
-        // ===== 統一資料來源：所有表格皆由同一份場次資料彙總，確保數字一致 =====
+        // ===== 統一資料來源：以「交易明細」為基礎，依篩選條件彙總，確保所有數字一致 =====
         const TICKET_TYPES = [
             { name: '全票',  price: 1200, sessionInventory: 350, web: 1890, store: 810, webRefund: 126, storeRefund: 54 },
             { name: '優待票', price: 800,  sessionInventory: 200, web: 1610, store: 690, webRefund: 84,  storeRefund: 36 }
@@ -1001,8 +851,9 @@
         const SESSION_TIMES = ['10:00', '14:00', '18:00'];
         const SESSION_CAPACITY = 500; // 每場次總容量（預設 500 張）
         const CHECKIN_RATE = 0.84;
-        // 各場次熱度權重 (固定值，避免每次重新整理數字都不同)
         const SESSION_WEIGHTS = [5, 6, 8, 5, 6, 9, 5, 7, 8, 6, 6, 9, 4, 5, 7, 3, 4, 5];
+        const SALE_DAYS = 90;                 // 交易資料涵蓋：今天往前 90 天
+        const STORE_PAY_WEIGHTS = [7, 3];     // 門市購票：現金 7 : 信用卡 3
 
         // 最大餘數法：將總數依權重分配，保證加總完全等於總數
         function distribute(total, weights) {
@@ -1020,231 +871,186 @@
         const fmt = n => n.toLocaleString('en-US');
         const money = n => 'NT$ ' + fmt(n);
         const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0.0%';
+        const pad = n => String(n).padStart(2, '0');
+        const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-        function buildDataset() {
-            const sessions = [];
-            SESSION_DATES.forEach(d => SESSION_TIMES.forEach(t => sessions.push({ date: d, time: t, tickets: {} })));
+        const SESSIONS = [];
+        SESSION_DATES.forEach(d => SESSION_TIMES.forEach(t => SESSIONS.push({ date: d, time: t })));
+
+        // 交易日期與每日權重 (開賣初期高峰、固定值避免每次重新整理數字不同)
+        const TODAY = new Date();
+        const SALE_DATES = Array.from({ length: SALE_DAYS }, (_, i) => {
+            const d = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() - (SALE_DAYS - 1 - i));
+            return ymd(d);
+        });
+        const DAY_WEIGHTS = SALE_DATES.map((_, i) => 1 + ((i * 37 + 11) % 13) + (i < 5 ? 30 : 0) + (i > SALE_DAYS - 8 ? 10 : 0));
+
+        // 建立交易明細：{ date, s(場次索引), tt(票種), channel, pay, status, qty }
+        function buildRecords() {
+            const recs = [];
+            const push = (total, s, tt, channel, pay, status) => {
+                distribute(total, DAY_WEIGHTS).forEach((qty, di) => {
+                    if (qty) recs.push({ date: SALE_DATES[di], s, tt, channel, pay, status, qty });
+                });
+            };
             TICKET_TYPES.forEach(tt => {
-                const web  = distribute(tt.web,        SESSION_WEIGHTS);
-                const store = distribute(tt.store,      SESSION_WEIGHTS);
-                const webR  = distribute(tt.webRefund,  SESSION_WEIGHTS);
+                const web = distribute(tt.web, SESSION_WEIGHTS);
+                const store = distribute(tt.store, SESSION_WEIGHTS);
+                const webR = distribute(tt.webRefund, SESSION_WEIGHTS);
                 const storeR = distribute(tt.storeRefund, SESSION_WEIGHTS);
-                sessions.forEach((s, i) => {
-                    s.tickets[tt.name] = {
-                        inventory: tt.sessionInventory,   // 每場固定庫存
-                        web: web[i], store: store[i],
-                        webRefund: webR[i], storeRefund: storeR[i]
-                    };
+                SESSIONS.forEach((_, s) => {
+                    push(web[s], s, tt, 'web', 'credit', 'sold');
+                    push(webR[s], s, tt, 'web', 'credit', 'refund');
+                    const [sc, sk] = distribute(store[s], STORE_PAY_WEIGHTS);
+                    const [rc, rk] = distribute(storeR[s], STORE_PAY_WEIGHTS);
+                    push(sc, s, tt, 'store', 'cash', 'sold');
+                    push(sk, s, tt, 'store', 'credit', 'sold');
+                    push(rc, s, tt, 'store', 'cash', 'refund');
+                    push(rk, s, tt, 'store', 'credit', 'refund');
                 });
             });
-            return sessions;
+            return recs;
+        }
+        const RECORDS = buildRecords();
+
+        // ===== 篩選條件 =====
+        const startInput = document.getElementById('filter-start');
+        const endInput = document.getElementById('filter-end');
+
+        function setDefaultFilters() {
+            const start = new Date(TODAY.getFullYear(), TODAY.getMonth() - 1, TODAY.getDate());
+            startInput.value = ymd(start);
+            endInput.value = ymd(TODAY);
+            document.querySelectorAll('.filter-pay, .filter-status').forEach(cb => cb.checked = true);
         }
 
-        function generateDynamicTables() {
-            const sessions = buildDataset();
-            const sum = (fn) => sessions.reduce((a, s) => a + TICKET_TYPES.reduce((b, tt) => b + fn(s.tickets[tt.name], tt), 0), 0);
-            const sumType = (tt, key) => sessions.reduce((a, s) => a + s.tickets[tt.name][key], 0);
+        function getFilteredRecords() {
+            let start = startInput.value, end = endInput.value;
+            if (start && end && start > end) [start, end] = [end, start];
+            const pays = [...document.querySelectorAll('.filter-pay:checked')].map(c => c.value);
+            const statuses = [...document.querySelectorAll('.filter-status:checked')].map(c => c.value);
+            document.getElementById('filter-range-label').textContent =
+                `（${start || '不限'} ~ ${end || '不限'}）`;
+            return RECORDS.filter(r =>
+                (!start || r.date >= start) && (!end || r.date <= end) &&
+                pays.includes(r.pay) && statuses.includes(r.status));
+        }
+
+        // ===== 依篩選結果重新繪製銷售數據與各視角表格 =====
+        function renderAll() {
+            const recs = getFilteredRecords();
             const totalRow = 'style="background-color: #f8fafc; font-weight: bold;"';
+            const agg = (pred, val = r => r.qty) => recs.reduce((a, r) => a + (pred(r) ? val(r) : 0), 0);
+            const amt = r => r.qty * r.tt.price;
+            const isSold = r => r.status === 'sold', isRef = r => r.status === 'refund';
+            // 剩餘庫存以「全部已售出」計算（不受篩選影響）
+            const allSold = pred => RECORDS.reduce((a, r) => a + (r.status === 'sold' && pred(r) ? r.qty : 0), 0);
+
+            // ---- 銷售數據卡片 ----
+            const webSold = agg(r => isSold(r) && r.channel === 'web');
+            const storeSold = agg(r => isSold(r) && r.channel === 'store');
+            const checkin = Math.round(webSold * CHECKIN_RATE) + Math.round(storeSold * CHECKIN_RATE);
+            document.getElementById('stat-sold-qty').textContent = fmt(webSold + storeSold);
+            document.getElementById('stat-sold-amt').textContent = money(agg(isSold, amt));
+            document.getElementById('stat-refund-qty').textContent = fmt(agg(isRef));
+            document.getElementById('stat-refund-amt').textContent = money(agg(isRef, amt));
+            document.getElementById('stat-checkin-qty').textContent = fmt(checkin);
+
+            // ---- 票種交叉表 ----
+            {
+                let html = '', tInv = 0, tSold = 0, tRemain = 0, tRef = 0;
+                TICKET_TYPES.forEach(tt => {
+                    const inv = tt.sessionInventory * SESSIONS.length;
+                    const sold = agg(r => isSold(r) && r.tt === tt);
+                    const remain = inv - allSold(r => r.tt === tt);
+                    const ref = agg(r => isRef(r) && r.tt === tt);
+                    tInv += inv; tSold += sold; tRemain += remain; tRef += ref;
+                    html += `<tr><td>${tt.name}</td><td>${fmt(inv)}</td><td>${fmt(sold)}</td><td>${fmt(remain)}</td><td>${pct(sold, inv)}</td><td>${fmt(ref)}</td></tr>`;
+                });
+                html += `<tr ${totalRow}><td>總計</td><td>${fmt(tInv)}</td><td>${fmt(tSold)}</td><td>${fmt(tRemain)}</td><td>${pct(tSold, tInv)}</td><td>${fmt(tRef)}</td></tr>`;
+                document.getElementById('ticket-type-tbody').innerHTML = html;
+            }
 
             // ---- 場次總覽 ----
-            const overviewTbody = document.getElementById('overview-tbody');
-            if (overviewTbody) {
-                let html = '';
-                sessions.forEach(s => {
-                    // 計算本場次所有票種的售出總計
-                    const sessionTotalSold = TICKET_TYPES.reduce((acc, tt) => {
-                        const r = s.tickets[tt.name];
-                        return acc + r.web + r.store + (r.direct || 0);
-                    }, 0);
-                    const sessionRemaining = SESSION_CAPACITY - sessionTotalSold;
-                    const sessionRemainingColor = sessionRemaining <= 0 ? 'var(--danger)' : sessionRemaining <= 50 ? 'var(--warning)' : 'var(--success)';
-
+            {
+                let html = '', gSold = 0, gRemain = 0, gInv = 0, gTypeRemain = 0;
+                const rs = TICKET_TYPES.length;
+                SESSIONS.forEach((s, si) => {
+                    const sessSold = agg(r => isSold(r) && r.s === si);
+                    const sessRemain = SESSION_CAPACITY - allSold(r => r.s === si);
+                    gSold += sessSold; gRemain += sessRemain;
+                    const sessColor = sessRemain <= 0 ? 'var(--danger)' : sessRemain <= 50 ? 'var(--warning)' : 'var(--success)';
                     TICKET_TYPES.forEach((tt, idx) => {
-                        const r = s.tickets[tt.name];
-                        const sold = r.web + r.store + (r.direct || 0);
-                        const ticketRemaining = r.inventory - sold;
-                        const ticketRemainingColor = ticketRemaining <= 0 ? 'var(--danger)' : ticketRemaining <= 20 ? 'var(--warning)' : 'var(--text-main)';
-
+                        const inv = tt.sessionInventory;
+                        const sold = agg(r => isSold(r) && r.s === si && r.tt === tt);
+                        const remain = inv - allSold(r => r.s === si && r.tt === tt);
+                        gInv += inv; gTypeRemain += remain;
+                        const tColor = remain <= 0 ? 'var(--danger)' : remain <= 20 ? 'var(--warning)' : 'var(--text-main)';
                         html += `<tr>
-                            ${idx === 0 ? `<td rowspan="${TICKET_TYPES.length}" style="background:#f8faff; vertical-align:middle; text-align:center; font-weight:500;">${s.date}<br><span style="font-size:12px; color:var(--text-muted);">${s.time}</span></td>` : ''}
                             ${idx === 0 ? `
-                            <td rowspan="${TICKET_TYPES.length}" style="text-align:center; vertical-align:middle; border-left: 2px solid #ca8a04; background:#fefce8; font-weight:bold;">${fmt(SESSION_CAPACITY)}</td>
-                            <td rowspan="${TICKET_TYPES.length}" style="text-align:center; vertical-align:middle; background:#fefce8; font-weight:bold; color:var(--primary);">${fmt(sessionTotalSold)}</td>
-                            <td rowspan="${TICKET_TYPES.length}" style="text-align:center; vertical-align:middle; background:#fefce8; font-weight:bold; color:${sessionRemainingColor};">${fmt(sessionRemaining)}</td>
-                            ` : ''}
-                            <td style="color:var(--text-main);">${tt.name}</td>
-                            <td style="text-align:right;">${fmt(r.inventory)}</td>
+                            <td rowspan="${rs}" style="background:#f8faff; vertical-align:middle; text-align:center; font-weight:500;">${s.date}<br><span style="font-size:12px; color:var(--text-muted);">${s.time}</span></td>
+                            <td rowspan="${rs}" style="text-align:center; vertical-align:middle; border-left: 2px solid #ca8a04; background:#fefce8; font-weight:bold;">${fmt(SESSION_CAPACITY)}</td>
+                            <td rowspan="${rs}" style="text-align:center; vertical-align:middle; background:#fefce8; font-weight:bold; color:var(--primary);">${fmt(sessSold)}</td>
+                            <td rowspan="${rs}" style="text-align:center; vertical-align:middle; background:#fefce8; font-weight:bold; color:${sessColor};">${fmt(sessRemain)}</td>` : ''}
+                            <td>${tt.name}</td>
+                            <td style="text-align:right;">${fmt(inv)}</td>
                             <td style="text-align:right; font-weight:bold; color:var(--primary);">${fmt(sold)}</td>
-                            <td style="text-align:right; color:${ticketRemainingColor}; font-weight:500;">${fmt(ticketRemaining)}</td>
+                            <td style="text-align:right; color:${tColor}; font-weight:500;">${fmt(remain)}</td>
                         </tr>`;
                     });
                 });
-                // 總計列
-                const w = sum(r => r.web), st = sum(r => r.store), d = sum(r => r.direct || 0), inv = sum(r => r.inventory);
-                const totalSold = w + st + d;
-                const totalCapacity = SESSION_DATES.length * SESSION_TIMES.length * SESSION_CAPACITY;
-                const totalRemaining = totalCapacity - totalSold;
                 html += `<tr style="background-color:#e2e8f0; font-weight:bold;">
                     <td style="text-align:center;">總計</td>
-                    <td style="text-align:center; border-left: 2px solid #ca8a04;">${fmt(totalCapacity)}</td>
-                    <td style="text-align:center; color:var(--primary);">${fmt(totalSold)}</td>
-                    <td style="text-align:center; color:${totalRemaining <= 0 ? 'var(--danger)' : 'var(--success)'};">${fmt(totalRemaining)}</td>
+                    <td style="text-align:center; border-left: 2px solid #ca8a04;">${fmt(SESSIONS.length * SESSION_CAPACITY)}</td>
+                    <td style="text-align:center; color:var(--primary);">${fmt(gSold)}</td>
+                    <td style="text-align:center;">${fmt(gRemain)}</td>
                     <td style="text-align:center;">（各票種）</td>
-                    <td style="text-align:right;">${fmt(inv)}</td>
-                    <td style="text-align:right; color:var(--primary);">${fmt(totalSold)}</td>
-                    <td style="text-align:right;">${fmt(inv - totalSold)}</td>
+                    <td style="text-align:right;">${fmt(gInv)}</td>
+                    <td style="text-align:right; color:var(--primary);">${fmt(gSold)}</td>
+                    <td style="text-align:right;">${fmt(gTypeRemain)}</td>
                 </tr>`;
-                overviewTbody.innerHTML = html;
-            }
-
-            // ---- 票種交叉表 ----
-            const typeTbody = document.getElementById('ticket-type-tbody');
-            if (typeTbody) {
-                let html = '', tInv = 0, tSold = 0, tRef = 0;
-                TICKET_TYPES.forEach(tt => {
-                    const inv = sumType(tt, 'inventory');
-                    const sold = sumType(tt, 'web') + sumType(tt, 'store');
-                    const ref = sumType(tt, 'webRefund') + sumType(tt, 'storeRefund');
-                    tInv += inv; tSold += sold; tRef += ref;
-                    html += `<tr><td>${tt.name}</td><td>${fmt(inv)}</td><td>${fmt(sold)}</td><td>${fmt(inv - sold)}</td><td>${pct(sold, inv)}</td><td>${fmt(ref)}</td></tr>`;
-                });
-                html += `<tr ${totalRow}><td>總計</td><td>${fmt(tInv)}</td><td>${fmt(tSold)}</td><td>${fmt(tInv - tSold)}</td><td>${pct(tSold, tInv)}</td><td>${fmt(tRef)}</td></tr>`;
-                typeTbody.innerHTML = html;
+                document.getElementById('overview-tbody').innerHTML = html;
             }
 
             // ---- 銷售通路分析 ----
-            const channelTbody = document.getElementById('channel-tbody');
-            if (channelTbody) {
+            {
                 const ch = [
-                    { name: '網站購票 (Online)', qty: sum(r => r.web), amt: sum((r, tt) => r.web * tt.price), rq: sum(r => r.webRefund), ra: sum((r, tt) => r.webRefund * tt.price) },
-                    { name: '門市購票 (Retail)', qty: sum(r => r.store), amt: sum((r, tt) => r.store * tt.price), rq: sum(r => r.storeRefund), ra: sum((r, tt) => r.storeRefund * tt.price) },
-                    { name: '主辦自購 (Direct)', qty: 0, amt: 0, rq: 0, ra: 0 }
-                ];
+                    { name: '網站購票 (Online)', key: 'web' },
+                    { name: '門市購票 (Retail)', key: 'store' },
+                    { name: '主辦自購 (Direct)', key: 'direct' }
+                ].map(c => ({
+                    name: c.name,
+                    qty: agg(r => isSold(r) && r.channel === c.key),
+                    amt: agg(r => isSold(r) && r.channel === c.key, amt),
+                    rq: agg(r => isRef(r) && r.channel === c.key),
+                    ra: agg(r => isRef(r) && r.channel === c.key, amt)
+                }));
                 let html = '';
                 ch.forEach(c => html += `<tr><td>${c.name}</td><td>${fmt(c.qty)}</td><td>${money(c.amt)}</td><td>${fmt(c.rq)}</td><td>${money(c.ra)}</td></tr>`);
                 const t = k => ch.reduce((a, c) => a + c[k], 0);
                 html += `<tr ${totalRow}><td>總計</td><td>${fmt(t('qty'))}</td><td>${money(t('amt'))}</td><td>${fmt(t('rq'))}</td><td>${money(t('ra'))}</td></tr>`;
-                channelTbody.innerHTML = html;
+                document.getElementById('channel-tbody').innerHTML = html;
             }
 
             // ---- 票券型態分析 (網站=電子票，門市=紙本票) ----
-            const formatTbody = document.getElementById('format-tbody');
-            if (formatTbody) {
-                const eQty = sum(r => r.web), pQty = sum(r => r.store);
-                const eRef = sum(r => r.webRefund), pRef = sum(r => r.storeRefund);
+            {
+                const eQty = webSold, pQty = storeSold;
+                const eRef = agg(r => isRef(r) && r.channel === 'web'), pRef = agg(r => isRef(r) && r.channel === 'store');
                 const eChk = Math.round(eQty * CHECKIN_RATE), pChk = Math.round(pQty * CHECKIN_RATE);
                 const all = eQty + pQty;
-                formatTbody.innerHTML = `
+                document.getElementById('format-tbody').innerHTML = `
                     <tr><td>電子票 (QR Code)</td><td>${fmt(eQty)}</td><td>${fmt(eChk)}</td><td>${pct(eChk, eQty)}</td><td>${fmt(eRef)}</td><td>${pct(eQty, all)}</td></tr>
                     <tr><td>紙本票 (實體票券)</td><td>${fmt(pQty)}</td><td>${fmt(pChk)}</td><td>${pct(pChk, pQty)}</td><td>${fmt(pRef)}</td><td>${pct(pQty, all)}</td></tr>
-                    <tr ${totalRow}><td>總計</td><td>${fmt(all)}</td><td>${fmt(eChk + pChk)}</td><td>${pct(eChk + pChk, all)}</td><td>${fmt(eRef + pRef)}</td><td>100%</td></tr>`;
+                    <tr ${totalRow}><td>總計</td><td>${fmt(all)}</td><td>${fmt(eChk + pChk)}</td><td>${pct(eChk + pChk, all)}</td><td>${fmt(eRef + pRef)}</td><td>${all ? '100%' : '0.0%'}</td></tr>`;
             }
-
-            // ---- 完整明細表 ----
-            const detailContainer = document.getElementById('table-full-detail');
-            if (!detailContainer) return;
-
-            // 13 欄：網路電子票(售/退)、門市取票(未取/已取/退)、取票付款(售/退)、門市購票(售/退)、自辦電子(售/退)、自辦紙本(售/退)
-            const toCols = r => [r.web, r.webRefund, 0, 0, 0, 0, 0, r.store, r.storeRefund, 0, 0, 0, 0];
-            const addCols = (a, b) => a.map((v, i) => v + b[i]);
-            const cells = cols => cols.map(v => `<td>${fmt(v)}</td>`).join('');
-
-            let allHtml = '<div class="table-title" style="margin-bottom: 10px; font-size: 16px;">完整明細表 (各票種)</div>';
-            TICKET_TYPES.forEach(tt => {
-                allHtml += `
-                <div style="margin: 20px 0 10px 15px; font-size: 15px; font-weight: bold; color: var(--primary);">
-                    <i class="fas fa-ticket-alt"></i> ${tt.name} (單價 ${money(tt.price)})
-                </div>
-                <table style="margin-bottom: 30px; border-top: 2px solid var(--border-color);">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 15%;">銷售通路</th>
-                            <th colspan="2">網路電子票</th>
-                            <th colspan="3">網路訂票 - 門市取票</th>
-                            <th colspan="2">網路訂票 - 門市取票付款</th>
-                            <th colspan="2">門市購票</th>
-                            <th colspan="2">主辦自辦電子票</th>
-                            <th colspan="2">主辦自辦紙本票</th>
-                        </tr>
-                        <tr>
-                            <th colspan="2">刷卡 (信用卡/Open 錢包/icash Pay/街口支付/LINE Pay/AFTEE)</th>
-                            <th colspan="3">刷卡 (信用卡/Open 錢包/icash Pay/街口支付/LINE Pay/AFTEE)</th>
-                            <th colspan="2">現金</th>
-                            <th colspan="2">現金 / 刷卡</th>
-                            <th colspan="2">主辦自購</th>
-                            <th colspan="2">主辦自購</th>
-                        </tr>
-                        <tr>
-                            <th>狀態</th>
-                            <th>已售出</th><th>已退票</th>
-                            <th>已售出未取票</th><th>已取票</th><th>已退票</th>
-                            <th>已售出</th><th>已退票</th>
-                            <th>已售出</th><th>已退票</th>
-                            <th>已售出</th><th>已退票</th>
-                            <th>已售出</th><th>已退票</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-
-                let grand = new Array(13).fill(0), rowCount = 0;
-                SESSION_DATES.forEach(date => {
-                    let daily = new Array(13).fill(0);
-                    sessions.filter(s => s.date === date).forEach(s => {
-                        const cols = toCols(s.tickets[tt.name]);
-                        daily = addCols(daily, cols);
-                        const bg = rowCount++ % 2 === 0 ? '' : 'background-color: #fafafa;';
-                        allHtml += `<tr style="${bg}"><td>${s.date} ${s.time}</td>${cells(cols)}</tr>`;
-                    });
-                    grand = addCols(grand, daily);
-                });
-                const SOLD_IDX = [0, 2, 3, 5, 7, 9, 11], REFUND_IDX = [1, 4, 6, 8, 10, 12];
-                const totalSold = SOLD_IDX.reduce((s, i) => s + grand[i], 0);
-                const totalRefund = REFUND_IDX.reduce((s, i) => s + grand[i], 0);
-                allHtml += `<tr style="background-color: #e2e8f0; font-weight: bold; font-size: 14px;"><td>小計 (張數)</td>${cells(grand)}</tr>
-                <tr style="background-color: #e2e8f0; font-weight: bold; font-size: 14px;"><td>已售出</td><td colspan="13" style="text-align: left;">${fmt(totalSold)} 張</td></tr>
-                <tr style="background-color: #e2e8f0; font-weight: bold; font-size: 14px;"><td>已退票</td><td colspan="13" style="text-align: left;">${fmt(totalRefund)} 張</td></tr>
-                </tbody></table>`;
-            });
-            detailContainer.innerHTML = allHtml;
         }
 
-        // ===== 圓餅圖：依完整明細表資料換算銷售張數 (已售出 = 網路電子票 + 門市購票) =====
-        function renderDonutCharts() {
-            const sessions = buildDataset();
-            const PALETTE = ['#a7f3d0', '#86efac', '#38bdf8', '#7dd3fc', '#fcd34d', '#d9f99d', '#c4b5fd', '#fda4af'];
-            const sold = r => r.web + r.store;
-            const qtyTooltip = { callbacks: { label: c => `${c.label}：${fmt(c.parsed)} 張` } };
-            const opts = { ...donutOptions, plugins: { ...donutOptions.plugins, tooltip: qtyTooltip } };
-            const draw = (id, labels, data) => new Chart(document.getElementById(id).getContext('2d'), {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data, backgroundColor: PALETTE.slice(0, data.length) }] },
-                options: opts
-            });
+        document.getElementById('btn-filter-search').addEventListener('click', renderAll);
+        document.getElementById('btn-filter-clear').addEventListener('click', () => { setDefaultFilters(); renderAll(); });
 
-            // 各票種
-            draw('donut1', TICKET_TYPES.map(t => t.name),
-                TICKET_TYPES.map(t => sessions.reduce((a, s) => a + sold(s.tickets[t.name]), 0)));
-
-            // 各場次 (依日期彙總)
-            draw('donut2', SESSION_DATES.map(d => d.slice(5)),
-                SESSION_DATES.map(d => sessions.filter(s => s.date === d)
-                    .reduce((a, s) => a + TICKET_TYPES.reduce((b, t) => b + sold(s.tickets[t.name]), 0), 0)));
-
-            // 各票區 (無票區資料)
-            new Chart(document.getElementById('donut3').getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: ['無票區'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
-                options: { ...donutOptions, plugins: { ...donutOptions.plugins, tooltip: { enabled: false } } }
-            });
-
-            // 各通路
-            const chSum = key => sessions.reduce((a, s) => a + TICKET_TYPES.reduce((b, t) => b + s.tickets[t.name][key], 0), 0);
-            draw('donut4', ['網路電子票', '門市購票'], [chSum('web'), chSum('store')]);
-        }
-
-        // Initialize tables
-        generateDynamicTables();
-        renderDonutCharts();
+        // Initialize
+        setDefaultFilters();
+        renderAll();
     </script>
 </body>
 </html>
