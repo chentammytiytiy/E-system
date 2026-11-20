@@ -659,6 +659,7 @@
                             <th>票種名稱</th>
                             <th>總分配庫存</th>
                             <th>已售出</th>
+                            <th>已售出總金額</th>
                             <th>可售庫存 (剩餘)</th>
                             <th>銷售率</th>
                             <th>退票數</th>
@@ -970,16 +971,17 @@
 
             // ---- 票種交叉表 ----
             {
-                let html = '', tInv = 0, tSold = 0, tRemain = 0, tRef = 0;
+                let html = '', tInv = 0, tSold = 0, tRemain = 0, tRef = 0, tAmt = 0;
                 TICKET_TYPES.forEach(tt => {
                     const inv = tt.sessionInventory * SESSIONS.length;
                     const sold = agg(r => isSold(r) && r.tt === tt);
                     const remain = inv - allSold(r => r.tt === tt);
                     const ref = agg(r => isRef(r) && r.tt === tt);
-                    tInv += inv; tSold += sold; tRemain += remain; tRef += ref;
-                    html += `<tr><td>${tt.name}</td><td>${fmt(inv)}</td><td>${fmt(sold)}</td><td>${fmt(remain)}</td><td>${pct(sold, inv)}</td><td>${fmt(ref)}</td></tr>`;
+                    const amt = sold * (tt.name === '全票' ? 100 : 50);
+                    tInv += inv; tSold += sold; tRemain += remain; tRef += ref; tAmt += amt;
+                    html += `<tr><td>${tt.name}</td><td>${fmt(inv)}</td><td>${fmt(sold)}</td><td>${fmt(amt)}</td><td>${fmt(remain)}</td><td>${pct(sold, inv)}</td><td>${fmt(ref)}</td></tr>`;
                 });
-                html += `<tr ${totalRow}><td>總計</td><td>${fmt(tInv)}</td><td>${fmt(tSold)}</td><td>${fmt(tRemain)}</td><td>${pct(tSold, tInv)}</td><td>${fmt(tRef)}</td></tr>`;
+                html += `<tr ${totalRow}><td>總計</td><td>${fmt(tInv)}</td><td>${fmt(tSold)}</td><td>${fmt(tAmt)}</td><td>${fmt(tRemain)}</td><td>${pct(tSold, tInv)}</td><td>${fmt(tRef)}</td></tr>`;
                 document.getElementById('ticket-type-tbody').innerHTML = html;
             }
 
